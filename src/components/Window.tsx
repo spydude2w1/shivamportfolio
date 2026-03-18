@@ -63,10 +63,31 @@ export function Window({
                 dragX.set(0);
                 dragY.set(0);
             }}
-            initial={{ opacity: 0, scale: 0.96, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, scale: 0.5, y: 400, filter: 'blur(10px)' }}
+            animate={{ 
+                opacity: 1, 
+                scale: 1, 
+                y: 0, 
+                filter: 'blur(0px)',
+                transition: {
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 26,
+                    mass: 1,
+                    duration: 0.5
+                }
+            }}
+            exit={{ 
+                opacity: 0, 
+                scale: 0.1, 
+                y: 500,
+                x: (window.innerWidth / 2) - (position.x + size.width / 2), // Warp towards center bottom (dock)
+                filter: 'blur(20px)',
+                transition: { 
+                    duration: 0.4,
+                    ease: [0.645, 0.045, 0.355, 1.0] // Smooth cubic bezier for warp
+                }
+            }}
             onPointerDownCapture={onFocus}
             style={{
                 x: dragX,

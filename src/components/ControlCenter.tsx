@@ -10,23 +10,42 @@ import {
     IoTimerOutline,
     IoCameraOutline,
     IoPlay,
+    IoPause,
     IoPlayForward,
     IoPlayBack
 } from 'react-icons/io5';
-import { MdCellTower } from "react-icons/md"; // AirDrop
-import { TbBoxMultiple } from "react-icons/tb"; // Screen mirroring
-import { PiRectangleDashed } from "react-icons/pi"; // Stage manager
+import { MdCellTower } from "react-icons/md";
+import { TbBoxMultiple } from "react-icons/tb";
+import { PiRectangleDashed } from "react-icons/pi";
 
-export function ControlCenter({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+export function ControlCenter({
+    isOpen,
+    onClose,
+    onToggleMusic,
+    isMusicOpen
+}: {
+    isOpen: boolean,
+    onClose: () => void,
+    onToggleMusic: () => void,
+    isMusicOpen: boolean
+}) {
     const shouldReduceMotion = useReducedMotion();
-
-    // Toggle states for demonstration
     const [wifiOn, setWifiOn] = useState(true);
     const [btOn, setBtOn] = useState(true);
     const [airdropOn, setAirdropOn] = useState(true);
     const [focusOn, setFocusOn] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
 
-    // Liquid Glass Animation Variants
+    React.useEffect(() => {
+        const handleState = (e: any) => setIsPlaying(e.detail.isPlaying);
+        window.addEventListener("music-state", handleState);
+        return () => window.removeEventListener("music-state", handleState);
+    }, []);
+
+    const sendCommand = (cmd: string) => {
+        window.dispatchEvent(new CustomEvent("music-command", { detail: cmd }));
+    };
+
     const panelVariants: Variants = {
         hidden: {
             opacity: 0,
@@ -55,7 +74,7 @@ export function ControlCenter({ isOpen, onClose }: { isOpen: boolean, onClose: (
             filter: 'blur(8px)',
             transition: {
                 duration: shouldReduceMotion ? 0 : 0.25,
-                ease: [0.25, 1, 0.5, 1] // Decelerating exit
+                ease: [0.25, 1, 0.5, 1]
             }
         }
     };
@@ -73,126 +92,133 @@ export function ControlCenter({ isOpen, onClose }: { isOpen: boolean, onClose: (
                     animate="visible"
                     exit="exit"
                     variants={panelVariants}
-                    className="absolute top-[40px] right-[16px] w-[340px] rounded-[32px] p-4 text-white z-[9999] flex flex-col gap-3.5"
+                    className="absolute top-[40px] right-[16px] z-[9999] flex w-[340px] flex-col gap-3.5 rounded-[32px] p-4 text-white"
                     style={{
-                        // Liquid Glass / Tahoe Spec
                         background: 'rgba(30, 30, 35, 0.35)',
-                        backdropFilter: 'blur(65px) saturate(220%)',
-                        WebkitBackdropFilter: 'blur(65px) saturate(220%)',
+                        backdropFilter: 'blur(16px) saturate(220%)',
+                        WebkitBackdropFilter: 'blur(16px) saturate(220%)',
                         border: '1px solid rgba(255, 255, 255, 0.15)',
                         boxShadow: '0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset, inset 0 1px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(255,255,255,0.05)',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif'
                     }}
                 >
-                    {/* Specular Highlight Overlay for Liquid Edge */}
-                    <div className="absolute inset-0 rounded-[32px] pointer-events-none overflow-hidden z-[-1]">
+                    <div className="pointer-events-none absolute inset-0 z-[-1] overflow-hidden rounded-[32px]">
                         <div className="absolute top-0 left-0 right-0 h-[40%] bg-gradient-to-b from-white/10 to-transparent opacity-60"></div>
-                        <div className="absolute -inset-[100%] bg-gradient-to-tr from-transparent via-white/5 to-transparent rotate-45 transform pointer-events-none"></div>
+                        <div className="absolute -inset-[100%] rotate-45 transform bg-gradient-to-tr from-transparent via-white/5 to-transparent"></div>
                     </div>
 
-                    {/* Top Row: Connections | Now Playing */}
-                    <div className="flex gap-3.5 h-[146px]">
-                        {/* Connectivity Controls */}
-                        <div className="flex-1 flex flex-col gap-3.5 bg-[rgba(0,0,0,0.15)] rounded-[24px] p-3 shadow-inner border border-white/5 relative overflow-hidden">
-                            <motion.div
-                                whileTap="tap"
-                                onClick={() => setWifiOn(!wifiOn)}
-                                className="flex items-center gap-3 cursor-pointer group"
-                            >
+                    <div className="flex h-[146px] gap-3.5">
+                        <div className="relative flex flex-1 flex-col gap-3.5 overflow-hidden rounded-[24px] border border-white/5 bg-[rgba(0,0,0,0.15)] p-3 shadow-inner">
+                            <motion.div whileTap="tap" onClick={() => setWifiOn(!wifiOn)} className="group flex cursor-pointer items-center gap-3">
                                 <motion.div
                                     animate={{ backgroundColor: wifiOn ? '#007AFF' : 'rgba(255,255,255,0.15)' }}
-                                    className="w-[34px] h-[34px] rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-colors duration-300"
+                                    className="flex h-[34px] w-[34px] items-center justify-center rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-colors duration-300"
                                 >
                                     <IoWifi size={18} fill={wifiOn ? "white" : "rgba(255,255,255,0.7)"} />
                                 </motion.div>
                                 <div className="flex flex-col">
                                     <span className="text-[13px] font-semibold leading-tight text-white/90">Wi-Fi</span>
-                                    <span className="text-[11px] text-white/50 leading-tight">{wifiOn ? 'Home' : 'Off'}</span>
+                                    <span className="text-[11px] leading-tight text-white/50">{wifiOn ? 'Home' : 'Off'}</span>
                                 </div>
                             </motion.div>
 
-                            <div className="flex gap-2 flex-1 mt-1">
+                            <div className="mt-1 flex flex-1 gap-2">
                                 <motion.div
                                     whileTap="tap"
                                     onClick={() => setBtOn(!btOn)}
-                                    className={`flex-1 rounded-[16px] flex flex-col items-center justify-center gap-1 cursor-pointer transition-colors duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.2)] ${btOn ? 'bg-[#007AFF]' : 'bg-[rgba(255,255,255,0.15)]'}`}
+                                    className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-colors duration-300 ${btOn ? 'bg-[#007AFF]' : 'bg-[rgba(255,255,255,0.15)]'}`}
                                 >
                                     <IoBluetooth size={20} fill={btOn ? "white" : "rgba(255,255,255,0.7)"} />
                                 </motion.div>
                                 <motion.div
                                     whileTap="tap"
                                     onClick={() => setAirdropOn(!airdropOn)}
-                                    className={`flex-1 rounded-[16px] flex flex-col items-center justify-center gap-1 cursor-pointer transition-colors duration-300 shadow-[0_2px_8px_rgba(0,0,0,0.2)] ${airdropOn ? 'bg-[#007AFF]' : 'bg-[rgba(255,255,255,0.15)]'}`}
+                                    className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.2)] transition-colors duration-300 ${airdropOn ? 'bg-[#007AFF]' : 'bg-[rgba(255,255,255,0.15)]'}`}
                                 >
                                     <MdCellTower size={20} fill={airdropOn ? "white" : "rgba(255,255,255,0.7)"} />
                                 </motion.div>
                             </div>
                         </div>
 
-                        {/* Now Playing Widget */}
-                        <motion.div
+                        <motion.button
+                            type="button"
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.98 }}
-                            className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-[24px] p-3 flex flex-col justify-between cursor-pointer border border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.2)] relative overflow-hidden"
+                            onClick={() => {
+                                onToggleMusic();
+                                onClose();
+                            }}
+                            className="relative flex flex-1 cursor-pointer flex-col justify-between overflow-hidden rounded-[24px] border border-white/10 bg-[rgba(255,255,255,0.1)] p-3 text-left shadow-[0_4px_16px_rgba(0,0,0,0.2)]"
                         >
-                            {/* Glass Bloom behind cover */}
-                            <div className="absolute top-2 left-2 w-10 h-10 bg-orange-500/40 blur-xl rounded-full"></div>
-
-                            <div className="flex gap-2.5 relative z-10">
-                                <motion.div
-                                    animate={{ rotate: [0, 5, 0] }}
-                                    transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-                                    className="w-[44px] h-[44px] rounded-[10px] bg-gradient-to-br from-red-500 to-orange-400 flex-shrink-0 relative overflow-hidden shadow-md"
-                                >
-                                    <div className="absolute inset-0 flex items-center justify-center text-[22px]">🌞</div>
-                                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20"></div>
-                                </motion.div>
+                            <div className="absolute top-2 left-2 h-10 w-10 rounded-full bg-orange-500/40 blur-xl"></div>
+                            <div className="relative z-10 flex gap-2.5">
+                                <motion.img
+                                    src="/cover-image.jpg"
+                                    alt="OK Computer album art"
+                                    animate={isMusicOpen ? { rotate: 360 } : { rotate: 0 }}
+                                    transition={isMusicOpen ? { repeat: Infinity, duration: 10, ease: "linear" } : { duration: 0.2 }}
+                                    className="h-[44px] w-[44px] flex-shrink-0 rounded-[10px] object-cover shadow-md"
+                                />
                                 <div className="flex flex-col justify-center overflow-hidden">
-                                    <span className="text-[13px] font-semibold leading-tight truncate text-white/90">Besties</span>
-                                    <span className="text-[11px] text-white/60 leading-tight truncate">Black Country...</span>
+                                    <span className="truncate text-[13px] font-semibold leading-tight text-white/90">Let Down (Remastered)</span>
+                                    <span className="truncate text-[11px] leading-tight text-white/60">Radiohead</span>
                                 </div>
                             </div>
-                            <div className="flex justify-between items-center px-2 text-white/80 mt-2 relative z-10">
-                                <IoPlayBack size={18} className="cursor-pointer hover:text-white transition-colors" />
-                                <IoPlay size={24} className="cursor-pointer hover:text-white transition-colors" />
-                                <IoPlayForward size={18} className="cursor-pointer hover:text-white transition-colors" />
+                            <div className="relative z-10 mt-2 flex items-center justify-between px-2 text-white/80">
+                                <motion.div 
+                                    whileHover={{ scale: 1.15, color: 'white' }} 
+                                    whileTap={{ scale: 0.85 }}
+                                    onClick={(e) => { e.stopPropagation(); sendCommand("prev"); }}
+                                >
+                                    <IoPlayBack size={18} className="cursor-pointer" />
+                                </motion.div>
+                                <motion.div 
+                                    whileHover={{ scale: 1.15, color: 'white' }} 
+                                    whileTap={{ scale: 0.85 }}
+                                    onClick={(e) => { e.stopPropagation(); sendCommand("toggle"); }}
+                                >
+                                    {isPlaying ? <IoPause size={24} className="cursor-pointer" /> : <IoPlay size={24} className="cursor-pointer" />}
+                                </motion.div>
+                                <motion.div 
+                                    whileHover={{ scale: 1.15, color: 'white' }} 
+                                    whileTap={{ scale: 0.85 }}
+                                    onClick={(e) => { e.stopPropagation(); sendCommand("next"); }}
+                                >
+                                    <IoPlayForward size={18} className="cursor-pointer" />
+                                </motion.div>
                             </div>
-                        </motion.div>
+                        </motion.button>
                     </div>
 
-                    {/* Middle Row: Focus, Mirroring, Stage Manager */}
-                    <div className="flex gap-3.5 h-[64px]">
+                    <div className="flex h-[64px] gap-3.5">
                         <motion.div
                             whileTap="tap"
                             onClick={() => setFocusOn(!focusOn)}
-                            className="flex-[2] bg-[rgba(255,255,255,0.1)] rounded-[24px] p-3 flex items-center gap-3 cursor-pointer border border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.15)] relative overflow-hidden transition-colors"
+                            className="relative flex flex-[2] cursor-pointer items-center gap-3 overflow-hidden rounded-[24px] border border-white/10 bg-[rgba(255,255,255,0.1)] p-3 shadow-[0_4px_16px_rgba(0,0,0,0.15)] transition-colors"
                             animate={{ backgroundColor: focusOn ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)' }}
                         >
                             <motion.div
                                 animate={{ backgroundColor: focusOn ? '#5E5CE6' : 'rgba(255,255,255,0.15)' }}
-                                className="w-[34px] h-[34px] rounded-full flex items-center justify-center shadow-sm"
+                                className="flex h-[34px] w-[34px] items-center justify-center rounded-full shadow-sm"
                             >
                                 <IoMoon size={18} fill="white" />
                             </motion.div>
                             <span className="text-[14px] font-semibold text-white/90">Focus</span>
                         </motion.div>
-                        <motion.div whileTap="tap" whileHover={{ backgroundColor: 'rgba(255,255,255,0.15)' }} className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-[24px] flex items-center justify-center cursor-pointer border border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.15)] text-white/90">
+                        <motion.div whileTap="tap" whileHover={{ backgroundColor: 'rgba(255,255,255,0.15)' }} className="flex flex-1 cursor-pointer items-center justify-center rounded-[24px] border border-white/10 bg-[rgba(255,255,255,0.1)] text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.15)]">
                             <TbBoxMultiple size={24} />
                         </motion.div>
-                        <motion.div whileTap="tap" whileHover={{ backgroundColor: 'rgba(255,255,255,0.15)' }} className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-[24px] flex items-center justify-center cursor-pointer border border-white/10 shadow-[0_4px_16px_rgba(0,0,0,0.15)] text-white/90">
+                        <motion.div whileTap="tap" whileHover={{ backgroundColor: 'rgba(255,255,255,0.15)' }} className="flex flex-1 cursor-pointer items-center justify-center rounded-[24px] border border-white/10 bg-[rgba(255,255,255,0.1)] text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.15)]">
                             <PiRectangleDashed size={24} />
                         </motion.div>
                     </div>
 
-                    {/* Display & Sound Sliders Container */}
-                    <div className="flex flex-col gap-3.5 bg-[rgba(0,0,0,0.15)] rounded-[24px] p-3.5 shadow-inner border border-white/5">
-
-                        {/* Display Slider */}
+                    <div className="flex flex-col gap-3.5 rounded-[24px] border border-white/5 bg-[rgba(0,0,0,0.15)] p-3.5 shadow-inner">
                         <div className="flex items-center gap-3">
                             <IoSunny size={18} className="text-white/70" />
-                            <div className="flex-1 h-[26px] bg-[rgba(255,255,255,0.15)] rounded-full relative overflow-hidden backdrop-blur-md shadow-inner">
+                            <div className="relative h-[26px] flex-1 overflow-hidden rounded-full bg-[rgba(255,255,255,0.15)] shadow-inner backdrop-blur-md">
                                 <motion.div
-                                    className="absolute left-0 top-0 bottom-0 bg-white/90 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                                    className="absolute top-0 bottom-0 left-0 rounded-full bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                                     initial={{ width: "0%" }}
                                     animate={{ width: "75%" }}
                                     transition={{ duration: 0.8, ease: "easeOut" }}
@@ -200,12 +226,11 @@ export function ControlCenter({ isOpen, onClose }: { isOpen: boolean, onClose: (
                             </div>
                         </div>
 
-                        {/* Sound Slider */}
                         <div className="flex items-center gap-3">
                             <IoVolumeHigh size={18} className="text-white/70" />
-                            <div className="flex-1 h-[26px] bg-[rgba(255,255,255,0.15)] rounded-full relative overflow-hidden backdrop-blur-md shadow-inner">
+                            <div className="relative h-[26px] flex-1 overflow-hidden rounded-full bg-[rgba(255,255,255,0.15)] shadow-inner backdrop-blur-md">
                                 <motion.div
-                                    className="absolute left-0 top-0 bottom-0 bg-white/90 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                                    className="absolute top-0 bottom-0 left-0 rounded-full bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.5)]"
                                     initial={{ width: "0%" }}
                                     animate={{ width: "50%" }}
                                     transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
@@ -214,24 +239,22 @@ export function ControlCenter({ isOpen, onClose }: { isOpen: boolean, onClose: (
                         </div>
                     </div>
 
-                    {/* Bottom Utility Tools */}
-                    <div className="flex justify-between h-[54px] gap-3.5">
-                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-full flex items-center justify-center cursor-pointer border border-white/10 shadow-sm text-white/90">
-                            <div className="w-[20px] h-[20px] rounded-full border border-white/60 relative overflow-hidden">
-                                <div className="absolute left-0 top-0 bottom-0 right-1/2 bg-white/90"></div>
+                    <div className="flex h-[54px] justify-between gap-3.5">
+                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex flex-1 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[rgba(255,255,255,0.1)] text-white/90 shadow-sm">
+                            <div className="relative h-[20px] w-[20px] overflow-hidden rounded-full border border-white/60">
+                                <div className="absolute top-0 bottom-0 left-0 right-1/2 bg-white/90"></div>
                             </div>
                         </motion.div>
-                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-full flex items-center justify-center cursor-pointer border border-white/10 shadow-sm text-white/90">
+                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex flex-1 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[rgba(255,255,255,0.1)] text-white/90 shadow-sm">
                             <IoCalculator size={22} />
                         </motion.div>
-                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-full flex items-center justify-center cursor-pointer border border-white/10 shadow-sm text-white/90">
+                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex flex-1 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[rgba(255,255,255,0.1)] text-white/90 shadow-sm">
                             <IoTimerOutline size={22} />
                         </motion.div>
-                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex-1 bg-[rgba(255,255,255,0.1)] rounded-full flex items-center justify-center cursor-pointer border border-white/10 shadow-sm text-white/90">
+                        <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap" className="flex flex-1 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-[rgba(255,255,255,0.1)] text-white/90 shadow-sm">
                             <IoCameraOutline size={22} />
                         </motion.div>
                     </div>
-
                 </motion.div>
             )}
         </AnimatePresence>

@@ -1,0 +1,598 @@
+.playerWindow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -430px;
+    margin-top: -280px;
+    z-index: 9950;
+    min-height: 560px;
+    border-radius: 22px;
+    overflow: hidden;
+    background: linear-gradient(165deg, rgba(40, 40, 45, 0.94) 0%, rgba(20, 20, 22, 0.96) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 40px 100px rgba(0, 0, 0, 0.65), 
+        inset 0 1px 0 rgba(255, 255, 255, 0.1), 
+        inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(24px) saturate(180%);
+    transition: margin 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
+
+.playerExpanded {
+    margin-left: -520px; /* Half of EXPANDED_SIZE.width (1040) */
+    margin-top: -340px;  /* Half of EXPANDED_SIZE.height (680) */
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 72px);
+}
+
+.titleBar {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: linear-gradient(180deg, rgba(83, 83, 83, 0.96) 0%, rgba(43, 43, 43, 0.96) 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.45);
+    cursor: grab;
+    user-select: none;
+}
+
+.titleBar:active {
+    cursor: grabbing;
+}
+
+.trafficLights {
+    display: flex;
+    gap: 8px;
+}
+
+.trafficLight {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    color: rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.closeLight {
+    background: #ff5f57;
+}
+
+.minimizeLight {
+    background: #febc2e;
+}
+
+.expandLight {
+    background: #28c840;
+}
+
+.titleContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex: 1;
+    margin-right: 62px;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.equalizer {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 14px;
+}
+
+.equalizer span {
+    width: 3px;
+    background: linear-gradient(180deg, #94ffb2 0%, #39c56d 100%);
+    border-radius: 999px;
+    animation: equalizer 0.8s ease-in-out infinite alternate;
+}
+
+.equalizer span:nth-child(1) {
+    height: 8px;
+}
+
+.equalizer span:nth-child(2) {
+    height: 14px;
+}
+
+.equalizer span:nth-child(3) {
+    height: 10px;
+}
+
+.playerBody {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr);
+    height: calc(100% - 40px);
+}
+
+.leftPanel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 40px;
+    background: linear-gradient(180deg, rgba(15, 15, 17, 0.5) 0%, rgba(10, 10, 12, 0.7) 100%);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.albumShell {
+    width: min(100%, 240px);
+    aspect-ratio: 1;
+    border-radius: 24px;
+    padding: 10px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.38));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.albumArt {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.34);
+    animation: spin 18s linear infinite paused;
+}
+
+.albumArtSpinning {
+    animation-play-state: running;
+}
+
+.albumCaption {
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+.rightPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 26px 28px 24px;
+    overflow-y: auto;
+    background: radial-gradient(circle at top right, rgba(86, 126, 188, 0.12), transparent 32%), linear-gradient(180deg, rgba(31, 31, 31, 0.9) 0%, rgba(16, 16, 16, 0.92) 100%);
+}
+
+.trackMeta h2 {
+    margin: 0;
+    color: #f5f7fb;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.trackMeta p {
+    margin: 6px 0 2px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 16px;
+}
+
+.trackMeta span {
+    color: rgba(255, 255, 255, 0.48);
+    font-size: 13px;
+}
+
+.visualizerFrame {
+    position: relative;
+    height: 148px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #111111;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.visualizerCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.visualizerScanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+    background-size: 100% 4px;
+    mix-blend-mode: screen;
+    opacity: 0.18;
+}
+
+.progressBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.progressMeta {
+    display: flex;
+    justify-content: space-between;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+}
+
+.progressFill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #63b4ff 0%, #83d2ff 100%);
+    box-shadow: 0 0 12px rgba(99, 180, 255, 0.55);
+}
+
+.progressThumb {
+    position: absolute;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(180deg, #fefefe 0%, #c4d8f9 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.controlStrip {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 8px;
+}
+
+.modeButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.modeButton {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.modeButtonActive {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.transportRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.transportButton {
+    appearance: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.transportPrimary {
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    font-size: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.transportPrimaryActive {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.footerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.volumeRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.volumeIcon {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 18px;
+}
+
+.volumeSlider {
+    appearance: none;
+    flex: 1;
+    height: 5px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(180, 220, 255, 0.9), rgba(255, 255, 255, 0.18));
+    cursor: pointer;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #f4f8ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+}
+
+.volumeSlider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 999px;
+    background: #f4f8ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+}
+
+.durationLabel {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.compactPlayer {
+    position: fixed;
+    left: 50%;
+    bottom: 110px;
+    transform: translateX(-50%);
+    z-index: 9950;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: min(92vw, 360px);
+    max-width: 92vw;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(24, 24, 24, 0.84);
+    backdrop-filter: blur(28px);
+    box-shadow: 0 22px 40px rgba(0, 0, 0, 0.42);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
+
+.compactInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+    color: #ffffff;
+}
+
+.compactArt,
+.toastArt {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.compactMeta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.compactMeta span:first-child {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.compactMeta span:last-child {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 12px;
+}
+
+.compactAction,
+.compactRestore {
+    appearance: none;
+    border-radius: 999px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.compactAction {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compactControls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 4px;
+}
+
+.compactSecondaryAction {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+
+.compactRestore {
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.toast {
+    position: fixed;
+    top: 62px;
+    right: 24px;
+    z-index: 9995;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: min(320px, calc(100vw - 32px));
+    padding: 12px 14px;
+    border-radius: 18px;
+    color: #ffffff;
+    background: rgba(28, 28, 30, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.36);
+    backdrop-filter: blur(22px);
+    animation: toast-in 220ms ease, toast-out 220ms ease 3.78s forwards;
+}
+
+.toastLabel {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 2px;
+}
+
+.toastText {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes equalizer {
+    from {
+        transform: scaleY(0.45);
+        opacity: 0.55;
+    }
+
+    to {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes toast-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+}
+
+@media (max-width: 900px) {
+    .playerWindow {
+        width: calc(100vw - 32px) !important;
+        min-height: 0;
+        left: 16px !important;
+        top: 54px !important;
+    }
+
+    .playerBody {
+        grid-template-columns: 1fr;
+    }
+
+    .leftPanel {
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 20px 24px 12px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .albumShell {
+        width: 110px;
+    }
+}
+
+@media (max-width: 767px) {
+    .toast {
+        top: 16px;
+        right: 16px;
+    }
+}

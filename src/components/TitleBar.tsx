@@ -20,7 +20,10 @@ export function TitleBar({ title, onClose, dragControls, isActive = true }: Titl
                     ? 'linear-gradient(180deg, #3c3c3c 0%, #323232 100%)'
                     : 'linear-gradient(180deg, #323232 0%, #2a2a2a 100%)'
             }}
-            onPointerDown={(e) => dragControls?.start(e)}
+            onPointerDown={(e) => {
+                e.stopPropagation();
+                dragControls?.start(e);
+            }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >

@@ -13,14 +13,14 @@ const DEFAULT_SIZES: Record<SectionKey, { width: number, height: number }> = {
 };
 
 const OFFSETS = {
-    main: { x: 0, y: 19 },
-    projects: { x: 30, y: 30 },
-    about: { x: 60, y: 60 },
-    skills: { x: 90, y: 90 },
-    thoughts: { x: 120, y: 120 },
-    timeline: { x: 150, y: 150 },
-    contact: { x: 180, y: 180 },
-    manual: { x: 210, y: 210 },
+    main: { x: 0, y: 0 },
+    projects: { x: 20, y: 20 },
+    about: { x: 40, y: 40 },
+    skills: { x: 60, y: 60 },
+    thoughts: { x: 80, y: 80 },
+    timeline: { x: 100, y: 100 },
+    contact: { x: 120, y: 120 },
+    manual: { x: 140, y: 60 },
 };
 
 export function useWindowManager() {

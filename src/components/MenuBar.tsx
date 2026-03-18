@@ -1,11 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence, useReducedMotion, Variants } from 'framer-motion';
 import { IoLogoApple, IoWifiSharp, IoBatteryHalfOutline, IoSearchOutline, IoOptionsOutline } from 'react-icons/io5';
 import { ControlCenter } from './ControlCenter';
 
 export type MenuAction = 'new_window' | 'close_window' | 'minimize' | 'reload' | 'projects' | 'about';
 
-export function MenuBar({ activeApp, onAction }: { activeApp: string, onAction?: (action: MenuAction) => void }) {
+export function MenuBar({
+    activeApp,
+    onAction,
+    onOpenResume,
+    onToggleMusic,
+    isMusicOpen
+}: {
+    activeApp: string,
+    onAction?: (action: MenuAction) => void,
+    onOpenResume: () => void,
+    onToggleMusic: () => void,
+    isMusicOpen: boolean
+}) {
     const [time, setTime] = useState<string>('');
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [isControlCenterOpen, setControlCenterOpen] = useState(false);
@@ -28,16 +40,16 @@ export function MenuBar({ activeApp, onAction }: { activeApp: string, onAction?:
         updateTime();
         const interval = setInterval(updateTime, 10000);
 
-        const handleClickOutside = (e: MouseEvent) => {
+        const handleClickOutside = (e: PointerEvent) => {
             if (ref.current && !ref.current.contains(e.target as Node)) {
                 setActiveMenu(null);
                 setControlCenterOpen(false);
             }
         };
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('pointerdown', handleClickOutside);
         return () => {
             clearInterval(interval);
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('pointerdown', handleClickOutside);
         };
     }, []);
 
@@ -86,15 +98,15 @@ export function MenuBar({ activeApp, onAction }: { activeApp: string, onAction?:
         }
     };
 
-    const liquidMenuClasses = "absolute top-[100%] left-0 mt-2 w-[220px] bg-[rgba(30,30,35,0.6)] backdrop-blur-[60px] saturate-[200%] border border-white/15 rounded-[16px] shadow-[0_20px_40px_rgba(0,0,0,0.5),_inset_0_1px_1px_rgba(255,255,255,0.2)] p-1.5 z-50 font-normal origin-top-left overflow-hidden";
+    const liquidMenuClasses = "absolute top-[100%] left-0 mt-2 w-[220px] bg-[rgba(30,30,35,0.6)] backdrop-blur-[16px] saturate-[200%] border border-white/15 rounded-[16px] shadow-[0_20px_40px_rgba(0,0,0,0.5),_inset_0_1px_1px_rgba(255,255,255,0.2)] p-1.5 z-50 font-normal origin-top-left overflow-hidden";
     const liquidItemClasses = "flex justify-between px-3 py-1.5 text-white/90 hover:bg-[#007AFF] hover:text-white rounded-[8px] cursor-pointer transition-colors duration-150 relative overflow-hidden group";
 
     return (
         <div ref={ref} className="absolute top-[8px] left-[16px] w-[calc(100vw-32px)] h-[28px] rounded-full flex items-center justify-between px-[16px] z-[9900]"
             style={{
                 background: 'rgba(20, 20, 22, 0.35)',
-                backdropFilter: 'blur(50px) saturate(200%) brightness(1.1)',
-                WebkitBackdropFilter: 'blur(50px) saturate(200%) brightness(1.1)',
+                backdropFilter: 'blur(32px) saturate(200%) brightness(1.1)',
+                WebkitBackdropFilter: 'blur(32px) saturate(200%) brightness(1.1)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
                 boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.15), 0 4px 24px rgba(0,0,0,0.4)',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif'
@@ -182,6 +194,14 @@ export function MenuBar({ activeApp, onAction }: { activeApp: string, onAction?:
                         )}
                     </AnimatePresence>
                 </div>
+
+                <button
+                    type="button"
+                    onClick={onOpenResume}
+                    className="hidden sm:block rounded-full px-3 py-[2px] text-white/95 transition-colors hover:bg-white/20 active:bg-white/30 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]"
+                >
+                    Resume
+                </button>
             </div>
 
             <div className="flex items-center space-x-[16px] text-white/95 font-medium tracking-tight cursor-default relative">
@@ -202,7 +222,12 @@ export function MenuBar({ activeApp, onAction }: { activeApp: string, onAction?:
                 <span className="text-[13px] ml-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] font-semibold">{time}</span>
             </div>
 
-            <ControlCenter isOpen={isControlCenterOpen} onClose={() => setControlCenterOpen(false)} />
+            <ControlCenter
+                isOpen={isControlCenterOpen}
+                onClose={() => setControlCenterOpen(false)}
+                onToggleMusic={onToggleMusic}
+                isMusicOpen={isMusicOpen}
+            />
         </div>
     );
 }

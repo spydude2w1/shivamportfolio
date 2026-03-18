@@ -1,5 +1,6 @@
-"use client"
-import React, { useState, useEffect } from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import { TerminalBody } from '../TerminalBody';
 import { InputLine } from '../InputLine';
 import { MenuItem } from '../ui/MenuItem';
@@ -7,8 +8,8 @@ import { useAutoType } from '../../hooks/useAutoType';
 import { SectionKey } from '../../types';
 
 const ENTRY_LINES = [
-    "empty1", // blank
-    "BISWAL/OS v1.0.0 — Bengaluru, IN",
+    "empty1",
+    "BISWAL/OS v1.0.0 - Bengaluru, IN",
     "All systems operational. Welcome.",
     "empty2",
     "Hey. I'm Shivam.",
@@ -20,24 +21,11 @@ const ENTRY_LINES = [
     "empty5"
 ];
 
-// Delays in ms
-const DELAYS = [
-    200, // delay after first line
-    0,   // "BISWAL/OS"
-    400, // "All systems..."
-    0,
-    300, // "Hey. I'm Shivam"
-    0,
-    0,
-    0,
-    0,
-    0
-];
+const DELAYS = [200, 0, 400, 0, 300, 0, 0, 0, 0, 0];
 
 export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void }) {
-    const { visibleLines, finished, linesToRender } = useAutoType(ENTRY_LINES, DELAYS, 300);
+    const { finished, linesToRender } = useAutoType(ENTRY_LINES, DELAYS, 300);
     const [echoCommand, setEchoCommand] = useState<string | null>(null);
-
     const [dateStr, setDateStr] = useState('');
 
     useEffect(() => {
@@ -50,7 +38,6 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
 
         setEchoCommand(val);
 
-        // Resolve keyword or number
         const navMap: Record<string, SectionKey> = {
             '1': 'projects', 'project': 'projects', 'projects': 'projects', 'pro': 'projects',
             '2': 'about', 'about': 'about', 'ab': 'about',
@@ -61,26 +48,26 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
             '7': 'manual', 'cmd': 'manual', 'man': 'manual', 'ma': 'manual', 'manual': 'manual',
         };
 
-        const target = navMap[v] || Object.keys(navMap).find(k => k.startsWith(v)) ? navMap[Object.keys(navMap).find(k => k.startsWith(v)) as string] : null;
+        const matchingKey = Object.keys(navMap).find((key) => key.startsWith(v));
+        const target = navMap[v] || (matchingKey ? navMap[matchingKey] : null);
 
         setTimeout(() => {
             if (target) {
                 onNavigate(target as SectionKey);
             }
-            setEchoCommand(null); // allow re-enter
+            setEchoCommand(null);
         }, 200);
     };
 
     return (
         <TerminalBody>
-            {/* First line instant */}
             <div className="text-[var(--muted)] opacity-80">Last login: {dateStr} on ttys001</div>
 
             {linesToRender.map((line, idx) => {
                 if (line.startsWith("empty")) return <div key={idx} className="h-4" />;
 
-                if (line === "BISWAL/OS v1.0.0 — Bengaluru, IN") {
-                    return <div key={idx} className="text-[var(--amber)] font-bold">{line}</div>;
+                if (line === "BISWAL/OS v1.0.0 - Bengaluru, IN") {
+                    return <div key={idx} className="font-bold text-[var(--amber)]">{line}</div>;
                 }
 
                 if (line === "All systems operational. Welcome.") {
@@ -88,12 +75,12 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
                 }
 
                 if (line.startsWith("Select a section")) {
-                    return <div key={idx} className="text-[var(--muted)] italic">{line}</div>;
+                    return <div key={idx} className="italic text-[var(--muted)]">{line}</div>;
                 }
 
                 if (line === "menu") {
                     return (
-                        <div key={idx} className="flex flex-col gap-1 ml-4 animate-fade-in">
+                        <div key={idx} className="ml-4 flex animate-fade-in flex-col gap-1">
                             <MenuItem num={1} keyword="projects" desc="what i've built" onClick={onNavigate} />
                             <MenuItem num={2} keyword="about" desc="who i am" onClick={onNavigate} />
                             <MenuItem num={3} keyword="skills" desc="what i use" onClick={onNavigate} />

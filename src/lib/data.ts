@@ -3,9 +3,8 @@ export const PERSON = {
     tagline: "techpreneur. builder. the one who automated that.",
     location: "Bengaluru, IN",
     email: "shivambiswal01@gmail.com",
-    linkedin: "https://linkedin.com/in/shivambiswal",
-    github: "https://github.com/shivam-biswal",
-    phone: "+91 82172 62472",
+    linkedin: "https://www.linkedin.com/in/shivambiswal/",
+    github: "https://github.com/spydude2w1",
     coffee: "https://buymeacoffee.com/shivambiswal",
     school: "AECS Magnolia Maaruti Public School",
     graduating: 2027,
@@ -99,12 +98,12 @@ export const THOUGHTS = [
 ]
 
 export const TIMELINE = [
-    { year: "2020", event: "started freelancing on hiddendevs. age 14.", sub: "first client. first lesson in scope creep." },
-    { year: "2022", event: "lead designer at holographic games.", sub: "managed a team remotely at 15. also built game systems." },
-    { year: "2024", event: "founded firsttrack ai. took on technical lead at green credit.", sub: "started building the AI architecture end-to-end." },
-    { year: "2025", event: "won eureka! junior — all india rank 1.", sub: "iit bombay, e-cell. team: net zero ninja. boards: 95% overall." },
-    { year: "2026", event: "shipped urbexa projects website.", sub: "still building firsttrack ai." },
-    { year: "2027", event: "graduating.", sub: "█████████████████ [still writing this part]" },
+    { year: "11 y/o", event: "first taste of the internet.", sub: "worked with youtube creators (200k+ subs), built discord bots (node.js/mongodb)." },
+    { year: "12-13 y/o", event: "freelancing era & novak.", sub: "60+ clients on roblox for games with 25k+ CCU. bootstrapped NovaK editing cohort." },
+    { year: "14 y/o", event: "shipped firsttrack.ai.", sub: "built a self-healing observability agent platform (observe and execute)." },
+    { year: "15 y/o", event: "indie software & debugging.", sub: "freelance editing while sharpening software engineering skills on indie projects." },
+    { year: "16 y/o", event: "eureka! winner & trinetra.", sub: "won all india rank 1 at iit bombay. shipped trinetra, worked on green credit & commissions." },
+    { year: "2027", event: "graduating.", sub: "exploring founding opportunities and building aggressively in parallel." },
 ]
 
 export const SKILLS = {
@@ -120,3 +119,130 @@ export const SKILLS = {
         "information architecture", "web design",
     ],
 }
+
+export type ShipLogEntry = {
+    hash: string;
+    date: string;
+    message: string;
+    description: string;
+    status: 'live' | 'beta' | 'sunset';
+}
+
+export const SHIP_LOG: ShipLogEntry[] = [
+    {
+        hash: "a8f2c3d",
+        date: "2026-05-10",
+        message: "feat: portfolio v2 — macos-inspired OS experience",
+        description: "complete rewrite. animated wallpaper, terminal CLI, music player, github widget. the one you're looking at right now.",
+        status: "live",
+    },
+    {
+        hash: "e91b4f2",
+        date: "2026-03-15",
+        message: "ship: trinetra — surveillance intelligence platform",
+        description: "real-time threat detection system with computer vision and alert pipelines.",
+        status: "live",
+    },
+    {
+        hash: "c7d8a1e",
+        date: "2026-01-20",
+        message: "ship: urbexa projects website",
+        description: "premium construction company website. SEO-optimized service pages, approval explainer sections.",
+        status: "live",
+    },
+    {
+        hash: "3f9c2b1",
+        date: "2025-12-01",
+        message: "feat: green credit — AI sustainability OS",
+        description: "carbon footprint estimation, ESG AI agent, gamified impact tracking. won eureka! at iit bombay.",
+        status: "live",
+    },
+    {
+        hash: "d4e5f6a",
+        date: "2025-06-15",
+        message: "ship: novak editing cohort platform",
+        description: "bootstrapped an editing community & learning platform. managed content pipelines.",
+        status: "sunset",
+    },
+    {
+        hash: "b2a3c4d",
+        date: "2024-08-01",
+        message: "init: firsttrack.ai — observability agent platform",
+        description: "self-healing observability platform. observe. execute. repeat.",
+        status: "beta",
+    },
+    {
+        hash: "f1e2d3c",
+        date: "2023-12-20",
+        message: "feat: holographic games UI framework",
+        description: "complete game UI system, matchmaking, datastore services. served 25k+ CCU.",
+        status: "sunset",
+    },
+    {
+        hash: "a9b8c7d",
+        date: "2022-06-01",
+        message: "init: hiddendevs freelance career",
+        description: "started freelancing. 60+ clients, 10+ game studios, 4 years of shipping.",
+        status: "sunset",
+    },
+    {
+        hash: "0a1b2c3",
+        date: "2021-01-15",
+        message: "feat: discord bots for youtube creators",
+        description: "built custom bots (node.js/mongodb) for creators with 200k+ subscribers.",
+        status: "sunset",
+    },
+]
+
+export type GraveyardEntry = {
+    name: string;
+    born: string;
+    died: string;
+    epitaph: string;
+    causeOfDeath: string;
+    postMortem: string;
+}
+
+export const GRAVEYARD: GraveyardEntry[] = [
+    {
+        name: "SocialSync",
+        born: "2024",
+        died: "2024",
+        epitaph: "A social media scheduler that nobody asked for.",
+        causeOfDeath: "Market saturation",
+        postMortem: "Built a full MVP before doing any customer discovery. Found out there were 47 identical products. Lesson: talk to users before writing a single line of code.",
+    },
+    {
+        name: "StudyBuddy AI",
+        born: "2023",
+        died: "2024",
+        epitaph: "An AI tutoring platform. Smart, but too early.",
+        causeOfDeath: "Scope creep → burnout",
+        postMortem: "Started as a simple flashcard app, evolved into 'what if it also does video calls, whiteboards, and AR?' — tried to build everything at once. Died under its own ambition.",
+    },
+    {
+        name: "QuickInvoice",
+        born: "2023",
+        died: "2023",
+        epitaph: "Generate invoices in 30 seconds. Died in 30 days.",
+        causeOfDeath: "Lost interest",
+        postMortem: "Technically worked. But I didn't care about invoicing enough to maintain it. Passion matters. If you're bored building it, users will be bored using it.",
+    },
+    {
+        name: "CodeArena",
+        born: "2022",
+        died: "2022",
+        epitaph: "Competitive coding meets battle royale.",
+        causeOfDeath: "Technical complexity",
+        postMortem: "Real-time multiplayer + code execution sandboxing + leaderboards. For a solo 13-year-old developer. I learned what 'infrastructure overhead' means the hard way.",
+    },
+    {
+        name: "PixelForge",
+        born: "2022",
+        died: "2022",
+        epitaph: "An online pixel art editor with collaboration.",
+        causeOfDeath: "Shipped a better idea instead",
+        postMortem: "Was actually going well, but pivoted my energy to freelancing which was generating actual revenue. Sometimes killing a project is the right business decision.",
+    },
+]
+

@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useReducedMotion, Variants } from 'framer-moti
 import { IoLogoApple, IoWifiSharp, IoBatteryHalfOutline, IoSearchOutline, IoOptionsOutline } from 'react-icons/io5';
 import { ControlCenter } from './ControlCenter';
 
-export type MenuAction = 'new_window' | 'close_window' | 'minimize' | 'reload' | 'projects' | 'about';
+export type MenuAction = 'new_window' | 'close_window' | 'minimize' | 'reload' | 'projects' | 'about' | 'about_mac';
 
 export function MenuBar({
     activeApp,
@@ -118,7 +118,7 @@ export function MenuBar({
                     <AnimatePresence>
                         {activeMenu === 'apple' && (
                             <motion.div variants={menuVariants} initial="hidden" animate="visible" exit="exit" className={liquidMenuClasses}>
-                                <div className={liquidItemClasses} onClick={() => handleAction('about')}>About This Mac</div>
+                                <div className={liquidItemClasses} onClick={() => handleAction('about_mac')}>About This Mac</div>
                                 <div className="h-[1px] bg-white/15 my-1.5 mx-2" />
                                 <div className={liquidItemClasses} onClick={() => handleAction('reload')}>Restart...</div>
                             </motion.div>

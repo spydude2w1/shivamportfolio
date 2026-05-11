@@ -384,14 +384,15 @@
 
 .compactPlayer {
     position: fixed;
-    left: 50%;
+    left: 0;
+    right: 0;
     bottom: 110px;
-    transform: translateX(-50%);
+    margin: 0 auto;
     z-index: 9950;
     display: flex;
     align-items: center;
     gap: 14px;
-    min-width: min(92vw, 360px);
+    width: min(92vw, 380px);
     max-width: 92vw;
     padding: 10px 14px;
     border-radius: 999px;
@@ -399,7 +400,7 @@
     background: rgba(24, 24, 24, 0.84);
     backdrop-filter: blur(28px);
     box-shadow: 0 22px 40px rgba(0, 0, 0, 0.42);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+    font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 }
 
 .compactInfo {

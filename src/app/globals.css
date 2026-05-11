@@ -110,6 +110,24 @@
     right: 20vw;
     animation: aurora-2 65s linear infinite;
   }
+
+  .animated-bg {
+    background: linear-gradient(-45deg, #0a0a0f, #1a1a2e, #16213e, #0a0a0f);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 15px !important;
+  }
 }
 
 

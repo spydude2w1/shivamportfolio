@@ -7,6 +7,9 @@ export type SectionKey =
     | 'timeline'
     | 'contact'
     | 'manual'
+    | 'about_mac'
+    | 'shiplog'
+    | 'graveyard';
 
 export type WindowState = {
     id: string

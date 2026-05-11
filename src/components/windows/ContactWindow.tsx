@@ -16,10 +16,22 @@ export function ContactWindow() {
     const ContactRow = ({ label, value, action, link }: { label: string, value: string, action?: () => void, link?: string }) => {
         const isCopied = copied === label;
 
+        const handleClick = () => {
+            if (link) {
+                if (link.startsWith('mailto:')) {
+                    window.location.href = link;
+                } else {
+                    window.open(link, '_blank');
+                }
+            } else if (action) {
+                action();
+            }
+        };
+
         return (
             <div className="flex flex-col mb-1 group">
                 <div
-                    onClick={link ? () => window.open(link, '_blank') : action}
+                    onClick={handleClick}
                     className="flex flex-row items-center cursor-pointer py-1"
                 >
                     <span className="w-24 text-[var(--test)]">{label}</span>
@@ -50,10 +62,9 @@ export function ContactWindow() {
                 </div>
 
                 <div className="flex flex-col w-full max-w-[400px] mb-6">
-                    <ContactRow label="email" value={PERSON.email} action={() => handleCopy(PERSON.email, 'email')} />
+                    <ContactRow label="email" value={PERSON.email} link={`mailto:${PERSON.email}`} />
                     <ContactRow label="linkedin" value="/in/shivambiswal" link={PERSON.linkedin} />
-                    <ContactRow label="github" value="/shivam-biswal" link={PERSON.github} />
-                    <ContactRow label="phone" value={PERSON.phone} action={() => handleCopy(PERSON.phone, 'phone')} />
+                    <ContactRow label="github" value="/spydude2w1" link={PERSON.github} />
                 </div>
 
                 <div className="text-[var(--text)] whitespace-pre-wrap mb-4">
@@ -64,25 +75,9 @@ export function ContactWindow() {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
                 </div>
 
-                <div className="flex items-center gap-2 mb-4">
-                    <span className="text-[var(--text)]">built at 2am. fueled by coffee.</span>
-                    <br />
-                    <span className="text-[var(--text)]">if something here was useful →</span>
-                    <button
-                        onClick={() => window.open(PERSON.coffee, '_blank')}
-                        className="text-[var(--muted)] hover:text-[var(--amber)] transition-colors ml-2"
-                    >
-                        [tip ↗]
-                    </button>
-                </div>
-
                 <div className="text-[var(--text)] whitespace-pre-wrap">
                     {`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
                 </div>
-            </div>
-
-            <div className="mt-8 opacity-40 hover:opacity-100 transition-opacity w-fit cursor-pointer" onClick={() => window.open(PERSON.coffee, '_blank')}>
-                <span className="text-[10px] text-[var(--muted)]">buy me a coffee</span>
             </div>
 
             <InputLine path="~/contact" blinking={true} />

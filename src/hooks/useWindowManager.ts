@@ -10,6 +10,9 @@ const DEFAULT_SIZES: Record<SectionKey, { width: number, height: number }> = {
     timeline: { width: 700, height: 520 },
     contact: { width: 700, height: 520 },
     manual: { width: 760, height: 560 },
+    about_mac: { width: 460, height: 420 },
+    shiplog: { width: 740, height: 560 },
+    graveyard: { width: 700, height: 540 },
 };
 
 const OFFSETS = {
@@ -21,6 +24,9 @@ const OFFSETS = {
     timeline: { x: 100, y: 100 },
     contact: { x: 120, y: 120 },
     manual: { x: 140, y: 60 },
+    about_mac: { x: 0, y: 0 },
+    shiplog: { x: 30, y: 30 },
+    graveyard: { x: 50, y: 50 },
 };
 
 export function useWindowManager() {

@@ -45,7 +45,9 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
             '4': 'thoughts', 'thought': 'thoughts', 'th': 'thoughts', 'thoughts': 'thoughts',
             '5': 'timeline', 'time': 'timeline', 'ti': 'timeline', 'timeline': 'timeline',
             '6': 'contact', 'contacts': 'contact', 'co': 'contact', 'contact': 'contact',
-            '7': 'manual', 'cmd': 'manual', 'man': 'manual', 'ma': 'manual', 'manual': 'manual',
+            '7': 'shiplog', 'ship': 'shiplog', 'shiplog': 'shiplog', 'log': 'shiplog',
+            '8': 'graveyard', 'grave': 'graveyard', 'graveyard': 'graveyard', 'rip': 'graveyard',
+            '9': 'manual', 'cmd': 'manual', 'man': 'manual', 'ma': 'manual', 'manual': 'manual',
         };
 
         const matchingKey = Object.keys(navMap).find((key) => key.startsWith(v));
@@ -87,7 +89,9 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
                             <MenuItem num={4} keyword="thoughts" desc="how i think" onClick={onNavigate} />
                             <MenuItem num={5} keyword="timeline" desc="where i've been" onClick={onNavigate} />
                             <MenuItem num={6} keyword="contact" desc="get in touch" onClick={onNavigate} />
-                            <MenuItem num={7} keyword="manual" desc="cmd mode" onClick={onNavigate} />
+                            <MenuItem num={7} keyword="shiplog" desc="git log --shipped" onClick={onNavigate} />
+                            <MenuItem num={8} keyword="graveyard" desc="ideas that didn't make it" onClick={onNavigate} />
+                            <MenuItem num={9} keyword="manual" desc="cmd mode" onClick={onNavigate} />
                         </div>
                     );
                 }

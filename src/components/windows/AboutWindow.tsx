@@ -13,30 +13,43 @@ export function AboutWindow() {
   ${PERSON.name.toUpperCase()}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  operating out of bengaluru, india.
+  I won a national entrepreneurship hackathon at IIT Bombay at 16. 
+  Not by luck, by shipping.
 
-  founder of firsttrack ai.
-  building it while still in school.
+  That experience crystallized something I already knew: 
+  the gap between a good idea and a good product is execution. 
+  I live in that gap.
 
-  technical lead at green credit (2024–2025).
-  built the AI backbone end-to-end.
+  I'm a full-stack engineer and product builder based in Bengaluru. 
+  I work at the intersection of engineering, design, and product strategy, 
+  writing production-grade code while keeping the user experience and 
+  business outcome in clear view.
 
-  won eureka! junior 2025 at iit bombay.
-  team: net zero ninja. rank 1. national.
+  [Tech stack]
+  → React, Next.js, TypeScript, n8n, JavaScript, Python, MongoDB, Supabase, Clerk, Sentry, Git, Lua
+  → Cloud infrastructure, DevOps workflows, scalable architectures
+  → UI/UX design using Next.js, React, Framer, Photoshop & After Effects
+  → VFX using Adobe After Effects, Blender for 3D Design
 
-  started designing at 14.
-  still do. that's where the taste comes from.
+  [What makes me different?]
+  I've been building real products for clients since I was 11.
 
-  i stay close to the code even when i'm leading.
-  engineering, product, and design — simultaneously.
-  most people pick one. i haven't.
+  At 11: Worked with YouTube creators (200k+ subs), built Discord bots (Node.js/MongoDB).
+  At 12-13: Freelanced on Roblox (60+ clients, 25k+ CCU games). Bootstrapped NovaK editing cohort.
+  At 14: Shipped firsttrack.ai (self-healing observability agent platform).
+  At 15: Freelance editing whilst shipping indie software, sharpening debugging skills.
+  At 16: Won Eureka! (IIT Bombay). Shipped trinetra, green credit, and client commissions.
 
-  currently obsessing over agentic workflows
-  and how far you can push production-grade AI
-  without it becoming a liability.
+  I don't just write code. I ask why we're building this, who it's for, 
+  and what success actually looks like.
 
-  graduating 2027. building until then. and after.
+  Currently a student (Target 2027), building aggressively, exploring 
+  founding opportunities, and learning in public.
 
+  If you're a founder who needs a technical co-founder or someone who's 
+  crazy about building, I'm always open.
+
+  📩 DM me or connect. Let's build something worth shipping.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`}
             </div>
             <div className="mt-2">

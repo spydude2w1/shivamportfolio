@@ -42,8 +42,6 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
     const [isAutoCompact, setIsAutoCompact] = useState(false);
 
     // Audio Safety Check (2-point)
-    // 1. On Mount/Init: Ensure volume is strictly 10%
-    // 2. On Playback Start: Re-verify volume hasn't jumped
     useEffect(() => {
         if (!userAdjustedVolume) {
             setVolume(0.10);
@@ -172,13 +170,18 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
         };
     }, []);
 
-    useEffect(() => {
-        if (!isVisible) {
-            // allow music to play in background when closed or minimized
-            // setIsPlaying(false);
-            // audioRef.current?.pause();
+    // Stop music when player is closed (not just minimized)
+    const handleClose = () => {
+        const audio = audioRef.current;
+        if (audio) {
+            audio.pause();
+            audio.currentTime = START_OFFSET;
         }
-    }, [isVisible]);
+        setIsPlaying(false);
+        setCurrentTime(START_OFFSET);
+        setIsMinimized(false);
+        onClose();
+    };
 
     const ensureAudioGraph = async () => {
         const audio = audioRef.current;
@@ -268,8 +271,10 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
 
     const shouldReduceMotion = useReducedMotion();
 
+    const SF_PRO_FONT = '"SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif';
+
     const variants = {
-        hidden: { opacity: 0, scale: 0.5, y: 400, filter: 'blur(10px)' },
+        hidden: { opacity: 0, scale: 0.92, y: 60, filter: 'blur(8px)' },
         visible: {
             opacity: 1,
             scale: 1,
@@ -277,60 +282,57 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
             filter: 'blur(0px)',
             transition: {
                 type: "spring" as const,
-                stiffness: 220,
-                damping: 24,
-                mass: 0.8,
-                duration: shouldReduceMotion ? 0 : 0.45
+                stiffness: 300,
+                damping: 28,
+                mass: 0.6,
+                duration: shouldReduceMotion ? 0 : 0.5
             }
         },
         exit: {
             opacity: 0,
-            scale: 0.8,
-            y: 100,
-            filter: 'blur(20px)',
+            scale: 0.92,
+            y: 40,
+            filter: 'blur(6px)',
             transition: { 
-                duration: 0.5,
+                duration: 0.35,
                 ease: [0.4, 0, 0.2, 1] as any
             }
         }
     };
 
     const compactVariants = {
-        hidden: { opacity: 0, y: 40, x: "-50%", scale: 0.8 },
+        hidden: { opacity: 0, y: 30, scale: 0.9 },
         visible: {
             opacity: 1,
             y: 0,
-            x: "-50%",
             scale: 1,
             transition: {
                 type: "spring" as const,
-                stiffness: 280,
-                damping: 22,
-                duration: shouldReduceMotion ? 0 : 0.5
+                stiffness: 350,
+                damping: 26,
+                duration: shouldReduceMotion ? 0 : 0.45
             }
         },
         exit: {
             opacity: 0,
-            y: 20,
-            x: "-50%",
+            y: 15,
             scale: 0.95,
-            transition: { duration: shouldReduceMotion ? 0 : 0.25 }
+            transition: { duration: shouldReduceMotion ? 0 : 0.2 }
         }
     };
 
-    if (!isVisible) {
-        return null;
-    }
 
     return (
         <>
             <AnimatePresence>
-                {showToast && (
+                {isVisible && showToast && (
                     <motion.div
                         initial={{ opacity: 0, y: -20, x: 20 }}
                         animate={{ opacity: 1, y: 0, x: 0 }}
                         exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
                         className={styles.toast}
+                        style={{ fontFamily: SF_PRO_FONT }}
                     >
                         <img src="/cover-image.jpg" alt="OK Computer album art" className={styles.toastArt} />
                         <div>
@@ -342,7 +344,7 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
             </AnimatePresence>
 
             <AnimatePresence mode="wait">
-                {showCompact ? (
+                {isVisible && (showCompact ? (
                     <motion.div
                         key="compact"
                         variants={compactVariants}
@@ -351,6 +353,7 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                         exit="exit"
                         layout
                         className={styles.compactPlayer}
+                        style={{ fontFamily: SF_PRO_FONT }}
                     >
                         <motion.button
                             whileHover={{ scale: 1.02 }}
@@ -363,7 +366,13 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                                 }
                             }}
                         >
-                            <img src="/cover-image.jpg" alt="OK Computer album art" className={styles.compactArt} />
+                            <motion.img
+                                src="/cover-image.jpg"
+                                alt="OK Computer album art"
+                                className={styles.compactArt}
+                                animate={isPlaying ? { rotate: 360 } : { rotate: 0 }}
+                                transition={isPlaying ? { repeat: Infinity, duration: 8, ease: "linear" } : { duration: 0.3 }}
+                            />
                             <div className={styles.compactMeta}>
                                 <span>Let Down (Remastered)</span>
                                 <span>Radiohead</span>
@@ -372,8 +381,8 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
 
                         <div className={styles.compactControls}>
                             <motion.button
-                                whileHover={{ scale: 1.1, color: "#fff" }}
-                                whileTap={{ scale: 0.9 }}
+                                whileHover={{ scale: 1.15, color: "#fff" }}
+                                whileTap={{ scale: 0.85 }}
                                 type="button"
                                 className={styles.compactSecondaryAction}
                                 onClick={() => seekTo(currentTime - 10)}
@@ -383,17 +392,27 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
 
                             <motion.button
                                 whileHover={{ scale: 1.15, backgroundColor: "rgba(255,255,255,0.2)" }}
-                                whileTap={{ scale: 0.85 }}
+                                whileTap={{ scale: 0.8 }}
                                 type="button"
                                 className={styles.compactAction}
                                 onClick={() => void togglePlayback()}
                             >
-                                {isPlaying ? <IoPause /> : <IoPlay />}
+                                <AnimatePresence mode="wait">
+                                    <motion.span
+                                        key={isPlaying ? 'pause' : 'play'}
+                                        initial={{ scale: 0.5, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0.5, opacity: 0 }}
+                                        transition={{ duration: 0.15 }}
+                                    >
+                                        {isPlaying ? <IoPause /> : <IoPlay />}
+                                    </motion.span>
+                                </AnimatePresence>
                             </motion.button>
 
                             <motion.button
-                                whileHover={{ scale: 1.1, color: "#fff" }}
-                                whileTap={{ scale: 0.9 }}
+                                whileHover={{ scale: 1.15, color: "#fff" }}
+                                whileTap={{ scale: 0.85 }}
                                 type="button"
                                 className={styles.compactSecondaryAction}
                                 onClick={() => seekTo(currentTime + 10)}
@@ -437,20 +456,20 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                         >
                             <div className={styles.trafficLights}>
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.96 }}
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.9 }}
                                     type="button"
                                     className={`${styles.trafficLight} ${styles.closeLight}`}
                                     data-window-control="true"
                                     aria-label="Close player"
                                     onClick={(event) => {
                                         event.stopPropagation();
-                                        onClose();
+                                        handleClose();
                                     }}
                                 />
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.96 }}
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.9 }}
                                     type="button"
                                     className={`${styles.trafficLight} ${styles.minimizeLight}`}
                                     data-window-control="true"
@@ -461,8 +480,8 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                                     }}
                                 />
                                 <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.96 }}
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.9 }}
                                     type="button"
                                     className={`${styles.trafficLight} ${styles.expandLight}`}
                                     data-window-control="true"
@@ -489,12 +508,12 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.15 }}
+                                transition={{ delay: 0.1, duration: 0.4, ease: "easeOut" }}
                                 className={styles.leftPanel}
                             >
                                 <motion.div
                                     animate={isPlaying ? { scale: [1, 1.02, 1] } : { scale: 1 }}
-                                    transition={isPlaying ? { repeat: Infinity, duration: 2, ease: "easeInOut" } : { duration: 0.2 }}
+                                    transition={isPlaying ? { repeat: Infinity, duration: 2, ease: "easeInOut" } : { duration: 0.3 }}
                                     className={styles.albumShell}
                                 >
                                     <img
@@ -503,13 +522,20 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                                         className={`${styles.albumArt} ${isPlaying ? styles.albumArtSpinning : ""}`}
                                     />
                                 </motion.div>
-                                <div className={styles.albumCaption}>OK Computer</div>
+                                <motion.div
+                                    className={styles.albumCaption}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    OK Computer
+                                </motion.div>
                             </motion.div>
 
                             <motion.div
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.2 }}
+                                transition={{ delay: 0.15, duration: 0.4, ease: "easeOut" }}
                                 className={styles.rightPanel}
                             >
                                 <div className={styles.trackMeta}>
@@ -525,9 +551,9 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                                 <div className={styles.controlStrip}>
                                     <div className={styles.modeButtons}>
                                         <motion.button
-                                            whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-                                            whileTap={{ scale: 0.98 }}
-                                            transition={{ duration: 0.2 }}
+                                            whileHover={{ scale: 1.04, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                                            whileTap={{ scale: 0.96 }}
+                                            transition={{ duration: 0.15 }}
                                             type="button"
                                             className={`${styles.modeButton} ${isShuffleOn ? styles.modeButtonActive : ""}`}
                                             onClick={() => setIsShuffleOn((value) => !value)}
@@ -537,9 +563,9 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                                             <span>Shuffle</span>
                                         </motion.button>
                                         <motion.button
-                                            whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-                                            whileTap={{ scale: 0.98 }}
-                                            transition={{ duration: 0.2 }}
+                                            whileHover={{ scale: 1.04, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                                            whileTap={{ scale: 0.96 }}
+                                            transition={{ duration: 0.15 }}
                                             type="button"
                                             className={`${styles.modeButton} ${isRepeatOn ? styles.modeButtonActive : ""}`}
                                             onClick={() => setIsRepeatOn((value) => !value)}
@@ -568,7 +594,7 @@ export function MusicPlayer({ isVisible, onClose }: MusicPlayerProps) {
                         </div>
 
                     </motion.div>
-                )}
+                ))}
             </AnimatePresence>
 
             <audio ref={audioRef} src="/letdown.mp3" preload="metadata" />

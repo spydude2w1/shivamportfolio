@@ -1,49 +1,156 @@
 import type { ReactNode } from 'react';
+import { PERSON, PROJECTS, SKILLS, THOUGHTS, TIMELINE } from './data';
 
 export type CommandResult = {
-    type: 'html' | 'text' | 'clear' | 'download' | 'open_url' | 'action' | 'navigation' | 'error';
+    type: 'html' | 'text' | 'clear' | 'download' | 'open_url' | 'action' | 'navigation' | 'error' | 'hire';
     content?: string | ReactNode;
     url?: string;
     target?: string;
     filename?: string;
 };
 
+// Session start time for uptime tracking
+const SESSION_START = Date.now();
+
+const FORTUNES = [
+    "the best time to ship was yesterday. the second best time is now.",
+    "if your code works on the first try, you should be worried.",
+    "a product is never finished, only abandoned — or funded.",
+    "debugging is like being the detective in a crime movie where you're also the murderer.",
+    "first make it work. then make it right. then make it fast. then rewrite everything.",
+    "sleep is just a longer compile time.",
+    "\"it works on my machine\" — certified production engineer.",
+    "every 'quick fix' is a future tech debt with compound interest.",
+    "the real MVP is the MVP you actually shipped.",
+    "move fast and break things. then fix them at 2am.",
+    "your commit message is a love letter to your future self.",
+    "a startup is just a to-do list that raises money.",
+];
+
+const TRASH_RESPONSES = [
+    "You can't delete shipped products.",
+    "Are you sure? This took 3 weeks of my life.",
+    "Trash is empty. I ship everything.",
+    "404: Regrets not found.",
+    "sudo rm -rf /regrets → Permission denied.",
+    "I don't throw away code. I archive lessons.",
+    "The only thing in my trash is imposter syndrome. And it keeps coming back.",
+];
+
+function formatUptime(): string {
+    const elapsed = Date.now() - SESSION_START;
+    const seconds = Math.floor(elapsed / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+
+    if (hours > 0) return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
+    if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+    return `${seconds}s`;
+}
+
+function getNeofetch(): string {
+    return `
+                 .:'          shivam@biswal
+             __ :'__          ──────────────────
+          .'  \`  -  \`.       OS: ShivamOS 16.0 (Bengaluru Build)
+         :  .-    -.  :       Host: AECS Magnolia Maaruti Public School
+         :  :      :  :       Kernel: Coffee-Fueled Neural Net v4.2
+          :  '-.  .-'  :      Uptime: ${formatUptime()}
+           \\  _ \\/ _  /       Shell: biswal/zsh 1.0
+            \\ \\  / / /        Resolution: Pixel Perfect™
+   jgs   /'.'--./-'.'\\       DE: macOS Sequoia (Fake)
+         /   /   /  \\  \\      WM: React + Framer Motion
+        '   /   '    '  '     Theme: Dark [always]
+                               Terminal Font: SF Mono
+                               CPU: Overclocked Brain @ 3.2GHz
+                               GPU: Adobe Creative Suite
+                               Memory: Photographic (mostly)
+                               Disk: 60+ shipped projects
+                               Battery: ██████████░░ 83% (coffee pending)`;
+}
+
 export function parseCommand(cmd: string): CommandResult {
     const normalized = cmd.trim().toLowerCase();
     const parts = normalized.split(/\s+/);
     const base = parts[0];
     const arg = parts.slice(1).join(' ');
+    const rawArg = cmd.trim().substring(base.length).trim();
 
     if (!base) return { type: 'text', content: '' };
 
+    // ── Easter Eggs ──────────────────────────────────────
     const EASTER_EGGS: Record<string, string> = {
         'sudo': 'permission denied. nice try.',
         'sudo su': 'still no.',
-        'rm -rf /': 'bold choice. nothing happened.',
-        'vim': 'just kidding.',
+        'vim': 'you\'re stuck now. just kidding. (but seriously, :q!)',
+        'nano': 'a man of culture. but this isn\'t that kind of terminal.',
         'why': 'still working on that one.',
         'exit': "come back when you've built something.",
         'shivam': 'you called? look around.',
         '2am': "you're up late too.",
-        'git log': 'commit 8a2b3c4d: refactor everything for the 5th time today\ncommit 1b9c4f2a: fix hydration error caused by adding too many divs',
-        'ping firsttrack': 'no response. still building.',
-        'hire': 'command not found: hire - try: cat contact.txt'
+        'ping firsttrack': 'PING firsttrack.ai (127.0.0.1): 56 data bytes\n64 bytes: icmp_seq=0 ttl=64 time=0.042ms\n--- still building ---',
+        'hire': 'command not found: hire → try: sudo hire shivam',
+        'man woman': 'No manual entry for woman. Try: man shivam',
+        'make sandwich': 'What? Make it yourself.',
+        'make me a sandwich': 'What? Make it yourself.',
+        'sudo make me a sandwich': 'Okay.',
+        'curl girlfriend': 'curl: (7) Failed to connect: No girlfriend found on port 443',
+        'python': '>>> import this\nThe Zen of Shivam: Ship it before it\'s perfect.',
+        'node': 'Welcome to Shivam.js v16.0.0\n> process.exit() // nice try',
+        'top': 'PID   USER      CPU%  MEM%  COMMAND\n1     shivam    99.9  42.0  building-stuff\n2     shivam    0.1   1.0   sleep (suspended)',
+        'ps aux': 'USER     PID  %CPU  COMMAND\nshivam   1    99.9  /usr/bin/build-products\nshivam   2    0.0   /usr/bin/sleep (NOT RUNNING)',
+        'git status': 'On branch main\nYour branch is ahead of \'origin/main\' by 847 commits.\n  (use "git push" to publish your local commits)\n\nnothing to commit, working tree clean\n(jk there\'s always something to commit)',
+        'git push': 'Everything up-to-date\n(narrator: it was not up-to-date)',
+        'git blame': 'It was me. It\'s always me. I\'m the only developer.',
+        'git commit -m "fix"': 'Please write better commit messages. — Future Shivam',
     };
 
     if (EASTER_EGGS[normalized]) {
         return { type: 'text', content: EASTER_EGGS[normalized] };
     }
 
-    if (base === 'sudo' && arg === 'hire me') {
+    // ── sudo hire shivam (multi-step) ────────────────────
+    if (base === 'sudo' && (arg === 'hire shivam' || arg === 'hire me')) {
         return {
-            type: 'text',
-            content: `[sudo] password for visitor:
-✓ Authentication successful
-✓ Sending offer letter to Shivam...
-✓ Done. Check shivambiswal01@gmail.com`
+            type: 'hire',
+            content: `[sudo] password for visitor: ••••••••
+✓ Verifying credentials...
+✓ Running background check... PASSED
+✓ Checking portfolio... IMPRESSIVE
+✓ Analyzing shipping velocity... OFF THE CHARTS
+✓ Evaluating coffee consumption... SUSTAINABLE
+
+╔══════════════════════════════════════════╗
+║  OFFER LETTER GENERATED SUCCESSFULLY     ║
+║                                          ║
+║  To: ${PERSON.email}             ║
+║  Role: Whatever needs building           ║
+║  Start: Yesterday (he's already late)    ║
+║                                          ║
+║  Status: SENDING EMAIL NOTIFICATION...   ║
+╚══════════════════════════════════════════╝`
         };
     }
 
+    // ── rm -rf / (dramatic fake deletion) ────────────────
+    if (normalized === 'rm -rf /' || normalized === 'rm -rf /*') {
+        return {
+            type: 'text',
+            content: `rm: removing '/users/shivam/projects/'... ██████████ DONE
+rm: removing '/users/shivam/skills/'...  ██████████ DONE
+rm: removing '/users/shivam/timeline/'.. ██████████ DONE
+rm: removing '/users/shivam/thoughts/'.. ██████████ DONE
+rm: removing '/users/shivam/sleep/'...... ALREADY EMPTY
+rm: removing '/users/shivam/ego/'........ FILE NOT FOUND
+rm: removing '/users/shivam/regrets/'.... ████░░░░░░ PERMISSION DENIED
+
+⚠️  Just kidding. Nothing happened.
+    You think I'd let you delete my portfolio?
+    I have backups. And trust issues.`
+        };
+    }
+
+    // ── open resume ──────────────────────────────────────
     if (base === 'open' && (arg === 'resume.pdf' || arg === 'resume')) {
         return { type: 'open_url', content: 'Opening ShivamBiswalResume.pdf...', url: '/ShivamBiswalResume.pdf' };
     }
@@ -57,30 +164,35 @@ export function parseCommand(cmd: string): CommandResult {
         };
     }
 
-    if (base === 'cat' && arg === 'resume') {
+    if (base === 'cat' && (arg === 'resume' || arg === 'resume.txt')) {
         return {
             type: 'text',
-            content: `┌─────────────────────────────────────┐
-│         SHIVAM BISWAL               │
-│  Founder & CEO | AI | Design        │
-├─────────────────────────────────────┤
-│  📧 shivambiswal01@gmail.com         │
-│  📍 Bengaluru, India                 │
-│  🏆 AIR 1 — Eureka! Junior, IIT Bombay│
-├─────────────────────────────────────┤
-│  EXPERIENCE                          │
-│  • Technical Lead @ Green Credit     │
-│  • Founder @ Firsttrack AI           │
-│  • Lead Designer @ Holographic Games │
-├─────────────────────────────────────┤
-│  SKILLS                              │
-│  Python | React | FastAPI | LLM      │
-│  Blender | Photoshop | After Effects │
-└─────────────────────────────────────┘
+            content: `┌──────────────────────────────────────────┐
+│           SHIVAM BISWAL                  │
+│   Founder & CEO | AI | Design            │
+├──────────────────────────────────────────┤
+│  📧 ${PERSON.email}              │
+│  📍 ${PERSON.location}                          │
+│  🏆 AIR 1 — Eureka! Junior, IIT Bombay   │
+├──────────────────────────────────────────┤
+│  EXPERIENCE                              │
+│  • Technical Lead @ Green Credit         │
+│  • Founder @ Firsttrack AI               │
+│  • Lead Designer @ Holographic Games     │
+│  • 60+ Freelance Clients (HiddenDevs)   │
+├──────────────────────────────────────────┤
+│  SKILLS                                  │
+│  ${SKILLS.technical.slice(0, 6).join(' | ')}│
+│  ${SKILLS.creative.slice(0, 5).join(' | ')}│
+├──────────────────────────────────────────┤
+│  SHIPPED                                 │
+│  ${PROJECTS.map(p => p.name).join(' · ')}│
+└──────────────────────────────────────────┘
 Type "download resume" to save the PDF.`
         };
     }
 
+    // ── Main command switch ──────────────────────────────
     switch (base) {
         case 'clear':
             return { type: 'clear' };
@@ -90,66 +202,116 @@ Type "download resume" to save the PDF.`
             return {
                 type: 'html',
                 content: `NAVIGATION
-  ls                    -> list current location
-  ls ~/Desktop          -> list desktop items
-  cd [section]          -> navigate to section
-  cd ..                 -> go up / back to main menu
-  pwd                   -> current location
-  clear                 -> clear window
+  ls                    → list current location
+  ls projects/          → list all projects
+  ls thoughts/          → list thought entries
+  ls skills/            → list skill categories
+  ls ~/Desktop          → list desktop items
+  cd [section]          → navigate to section
+  cd ..                 → back to main menu
+  pwd                   → current location
+  clear                 → clear window
 
 CONTENT
-  whoami                -> one-liner about Shivam
-  cat about.txt         -> full about text
-  cat contact.txt       -> contact info
-  cat resume            -> preview resume summary
-  cat resume.pdf        -> trigger PDF download
-  open resume.pdf       -> open the resume
-  download resume       -> save the resume
-  wget resume.pdf       -> save the resume
-  ls projects/          -> list all projects
-  open [project]        -> open project detail
-  ls thoughts/          -> list thought entries
-  cat thoughts/[n]      -> read specific entry
-  cat timeline.txt      -> full timeline
-  ls skills/            -> list skill categories
-  cat skills/technical  -> technical skills
-  cat skills/creative   -> creative skills
+  whoami                → about Shivam
+  cat about.txt         → full about text
+  cat contact.txt       → contact info
+  cat resume.txt        → ASCII resume card
+  cat resume.pdf        → download resume
+  cat timeline.txt      → full timeline
+  cat skills/technical  → technical skills
+  cat skills/creative   → creative skills
+  cat thoughts/[n]      → read specific thought
+  open resume.pdf       → open the resume
+  download resume       → save the resume
 
-META
-  history               -> commands typed this session
-  sudo hire me          -> absolutely not documented
-  help                  -> this list (partial - not everything)
-  version               -> BISWAL/OS v1.0.0`
+SYSTEM
+  neofetch              → system info
+  uptime                → session duration
+  date                  → current date/time
+  fortune               → wisdom (maybe)
+  history               → commands this session
+  echo [text]           → echo text back
+  version               → BISWAL/OS version
+
+FUN
+  sudo hire shivam      → 👀
+  rm -rf /              → try it. i dare you.
+  git log               → ship log
+  git status            → branch status
+  git blame             → who did this
+
+  not everything is listed here. explore.`
             };
 
         case 'version':
-            return { type: 'text', content: 'BISWAL/OS v1.0.0' };
+            return { type: 'text', content: 'BISWAL/OS v1.0.0 — built with next.js, framer motion, and sleep deprivation.' };
 
         case 'pwd':
             return { type: 'text', content: '/users/shivam/desktop' };
 
         case 'whoami':
-            return { type: 'text', content: 'shivam biswal - techpreneur, ai builder, automation engineer.' };
+            return {
+                type: 'text',
+                content: `shivam biswal
+├── techpreneur, ai builder, automation engineer
+├── founder @ firsttrack.ai
+├── AIR 1 — eureka! junior, iit bombay
+├── 60+ clients shipped since age 11
+├── based in bengaluru, india
+└── graduating 2027 • building until then & after
+
+"the gap between a good idea and a good product is execution. i live in that gap."`
+            };
+
+        case 'neofetch':
+            return { type: 'text', content: getNeofetch() };
+
+        case 'uptime':
+            return { type: 'text', content: `up ${formatUptime()} — visitor session on biswal/os` };
+
+        case 'date':
+            return { type: 'text', content: new Date().toString() };
+
+        case 'fortune':
+            return { type: 'text', content: FORTUNES[Math.floor(Math.random() * FORTUNES.length)] };
+
+        case 'echo':
+            if (!rawArg) return { type: 'text', content: '' };
+            return { type: 'text', content: rawArg };
 
         case 'cd':
-            if (['projects', 'about', 'skills', 'thoughts', 'timeline', 'contact', 'manual'].includes(arg)) {
+            if (['projects', 'about', 'skills', 'thoughts', 'timeline', 'contact', 'manual', 'shiplog', 'graveyard'].includes(arg)) {
                 return { type: 'navigation', target: arg };
             }
             if (arg === '..' || arg === '/') return { type: 'action', target: 'main' };
             return { type: 'error', content: `cd: no such file or directory: ${arg}` };
 
         case 'ls':
-            if (!arg) return { type: 'text', content: 'projects/  about.txt  skills/  thoughts/  timeline.txt  contact.txt  resume.pdf' };
-            if (arg === 'projects/' || arg === 'projects') return { type: 'text', content: 'green_credit  urbexa_projects  firsttrack_ai  holographic_games  hiddendevs' };
-            if (arg === 'thoughts/' || arg === 'thoughts') return { type: 'text', content: 'entry_1  entry_2  entry_3  entry_4  entry_5' };
-            if (arg === 'skills/' || arg === 'skills') return { type: 'text', content: 'technical  creative' };
-            if (arg === '~/desktop') return { type: 'text', content: 'Resume.pdf  Projects/  Contact.txt  README.md' };
+            if (!arg) return { type: 'text', content: 'projects/  about.txt  skills/  thoughts/  timeline.txt  contact.txt  resume.pdf  shiplog/  graveyard/' };
+            if (arg === 'projects/' || arg === 'projects') {
+                const listing = PROJECTS.map(p => `  ${p.name.padEnd(22)} ${p.stack[0].padEnd(14)} ${p.outcome.split('—')[0].trim()}`).join('\n');
+                return { type: 'text', content: `total ${PROJECTS.length}\n${listing}` };
+            }
+            if (arg === 'thoughts/' || arg === 'thoughts') {
+                const listing = THOUGHTS.map((t, i) => `  entry_${i + 1}    [${t.tag}]    ${t.text.slice(0, 50)}...`).join('\n');
+                return { type: 'text', content: `total ${THOUGHTS.length}\n${listing}` };
+            }
+            if (arg === 'skills/' || arg === 'skills') return { type: 'text', content: 'technical/  creative/' };
+            if (arg === 'skills/technical') return { type: 'text', content: SKILLS.technical.join('  ') };
+            if (arg === 'skills/creative') return { type: 'text', content: SKILLS.creative.join('  ') };
+            if (arg === '~/desktop') return { type: 'text', content: 'Resume.pdf  Projects/  Contact.txt  README.md  ShipLog/  Graveyard/' };
+            if (arg === 'shiplog/' || arg === 'shiplog') return { type: 'navigation', target: 'shiplog' };
+            if (arg === 'graveyard/' || arg === 'graveyard') return { type: 'navigation', target: 'graveyard' };
             return { type: 'error', content: `ls: cannot access '${arg}': No such file or directory` };
 
         case 'cat':
             if (arg === 'about.txt') return { type: 'navigation', target: 'about' };
             if (arg === 'contact.txt') return { type: 'navigation', target: 'contact' };
-            if (arg === 'timeline.txt') return { type: 'navigation', target: 'timeline' };
+            if (arg === 'timeline.txt') {
+                const tl = TIMELINE.map(t => `  [${t.year.padEnd(10)}] ${t.event}\n${''.padEnd(16)}${t.sub}`).join('\n\n');
+                return { type: 'text', content: `━━━ TIMELINE ━━━\n\n${tl}` };
+            }
             if (arg === 'skills/technical' || arg === 'skills/creative' || arg === 'skills') return { type: 'navigation', target: 'skills' };
             if (arg.startsWith('thoughts/')) return { type: 'navigation', target: 'thoughts' };
             if (arg === 'resume.pdf') {
@@ -160,13 +322,23 @@ META
                     filename: 'ShivamBiswalResume.pdf'
                 };
             }
-            return { type: 'error', content: `cat: ${arg}: No such file or directory` };
+            return { type: 'error', content: `cat: ${arg || '(no file specified)'}: No such file or directory` };
 
         case 'open':
-            if (arg === 'projects' || ['green_credit', 'urbexa_projects', 'firsttrack_ai', 'holographic_games', 'hiddendevs'].includes(arg)) {
+            if (arg === 'projects' || PROJECTS.some(p => p.id === arg || p.name === arg)) {
                 return { type: 'navigation', target: 'projects' };
             }
+            if (arg === 'shiplog') return { type: 'navigation', target: 'shiplog' };
+            if (arg === 'graveyard') return { type: 'navigation', target: 'graveyard' };
             return { type: 'error', content: `open: no such item: ${arg}` };
+
+        case 'git':
+            if (arg === 'log') return { type: 'navigation', target: 'shiplog' };
+            if (arg === 'status') return { type: 'text', content: EASTER_EGGS['git status'] || 'On branch main' };
+            if (arg === 'blame') return { type: 'text', content: EASTER_EGGS['git blame'] || '' };
+            if (arg === 'push') return { type: 'text', content: EASTER_EGGS['git push'] || '' };
+            if (arg.startsWith('commit')) return { type: 'text', content: 'Please write better commit messages. — Future Shivam' };
+            return { type: 'error', content: `git: '${arg}' is not a git command.` };
 
         case 'coffee':
         case 'tip':
@@ -175,7 +347,66 @@ META
         case 'history':
             return { type: 'action', target: 'history' };
 
+        case 'tree':
+            return {
+                type: 'text',
+                content: `.
+├── projects/
+│   ${PROJECTS.map(p => `├── ${p.name}/`).join('\n│   ')}
+├── skills/
+│   ├── technical/
+│   └── creative/
+├── thoughts/
+│   ${THOUGHTS.map((_, i) => `├── entry_${i + 1}`).join('\n│   ')}
+├── about.txt
+├── contact.txt
+├── resume.pdf
+├── timeline.txt
+├── shiplog/
+└── graveyard/
+
+${PROJECTS.length + THOUGHTS.length + 8} items`
+            };
+
+        case 'which':
+        case 'where':
+            if (arg === 'shivam') return { type: 'text', content: '/users/shivam/bengaluru/building-stuff' };
+            return { type: 'text', content: `${arg}: not found` };
+
+        case 'man':
+            if (arg === 'shivam') return { type: 'navigation', target: 'about' };
+            return { type: 'text', content: `No manual entry for ${arg || '(nothing)'}` };
+
+        case 'touch':
+            return { type: 'text', content: `touch: cannot touch '${arg}': Read-only file system. This is a portfolio, not a playground.` };
+
+        case 'mkdir':
+            return { type: 'text', content: `mkdir: cannot create directory '${arg}': This portfolio is carefully curated.` };
+
+        case 'chmod':
+            return { type: 'text', content: 'chmod: changing permissions of \'portfolio\': Operation not permitted. Nice try though.' };
+
+        case 'curl':
+            if (arg.includes('shivam') || arg.includes('portfolio')) {
+                return { type: 'text', content: 'You\'re already here. Look around.' };
+            }
+            return { type: 'text', content: `curl: (7) Failed to connect to ${arg}: Connection refused` };
+
+        case 'ping':
+            if (arg === 'shivam' || arg === 'biswal') {
+                return { type: 'text', content: `PING ${arg} (127.0.0.1): 56 data bytes\n64 bytes: icmp_seq=0 ttl=64 time=0.028ms\n64 bytes: icmp_seq=1 ttl=64 time=0.031ms\n--- ${arg} is alive and building ---` };
+            }
+            return { type: 'text', content: `PING ${arg}: Name or service not known` };
+
+        case 'hostname':
+            return { type: 'text', content: 'biswal-os.local' };
+
+        case 'uname':
+            return { type: 'text', content: 'ShivamOS 16.0.0 biswal-os arm64 Bengaluru/IN' };
+
         default:
-            return { type: 'error', content: `command not found: ${base}` };
+            return { type: 'error', content: `command not found: ${base}. type 'help' for available commands.` };
     }
 }
+
+export { TRASH_RESPONSES };

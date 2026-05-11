@@ -10,6 +10,7 @@ type InputLineProps = {
     blinking?: boolean;
     onChange?: (val: string) => void;
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+    isInteractive?: boolean;
 };
 
 export function InputLine({
@@ -20,7 +21,8 @@ export function InputLine({
     value,
     blinking = true,
     onChange,
-    onKeyDown
+    onKeyDown,
+    isInteractive = false
 }: InputLineProps) {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,14 +45,20 @@ export function InputLine({
 
     return (
         <div className="flex flex-row items-center gap-2 group whitespace-pre-wrap word-break flex-wrap leading-[1.7]">
-            <div className="flex flex-row gap-0 shrink-0">
-                <span className="text-[var(--green)] font-medium">shivam</span>
-                <span className="text-[var(--muted)]">@</span>
-                <span className="text-[var(--blue)] font-medium">biswal</span>
-                <span className="text-[var(--text)]">:</span>
-                <span className="text-[var(--amber)]">{path}</span>
-                <span className="text-[var(--muted)]">$</span>
-            </div>
+            {isInteractive ? (
+                <div className="flex flex-row gap-0 shrink-0 text-[var(--amber)]">
+                    <span className="font-bold mr-1">{'>'}</span>
+                </div>
+            ) : (
+                <div className="flex flex-row gap-0 shrink-0">
+                    <span className="text-[var(--green)] font-medium">shivam</span>
+                    <span className="text-[var(--muted)]">@</span>
+                    <span className="text-[var(--blue)] font-medium">biswal</span>
+                    <span className="text-[var(--text)]">:</span>
+                    <span className="text-[var(--amber)]">{path}</span>
+                    <span className="text-[var(--muted)]">$</span>
+                </div>
+            )}
 
             {readOnly ? (
                 <span className="text-[var(--text-bright)] whitespace-pre-wrap flex-1">{value}</span>

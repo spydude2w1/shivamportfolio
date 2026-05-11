@@ -12,10 +12,14 @@ import { ThoughtsWindow } from './windows/ThoughtsWindow';
 import { TimelineWindow } from './windows/TimelineWindow';
 import { ContactWindow } from './windows/ContactWindow';
 import { ManualWindow } from './windows/ManualWindow';
+import { AboutThisMacWindow } from './windows/AboutThisMacWindow';
+import { ShipLogWindow } from './windows/ShipLogWindow';
+import { GraveyardWindow } from './windows/GraveyardWindow';
 import { SectionKey } from '../types';
 import { MenuBar } from './MenuBar';
 import { Dock } from './Dock';
 import { DesktopIcons } from './DesktopIcons';
+import { GithubWidget } from './GithubWidget';
 import { openResumePdf } from '../lib/systemActions';
 import { BootScreen } from './BootScreen';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -50,6 +54,9 @@ export function Desktop() {
             case 'timeline': return <TimelineWindow />;
             case 'contact': return <ContactWindow />;
             case 'manual': return <ManualWindow onNavigate={openWindow} />;
+            case 'about_mac': return <AboutThisMacWindow />;
+            case 'shiplog': return <ShipLogWindow />;
+            case 'graveyard': return <GraveyardWindow />;
             default: return null;
         }
     };
@@ -61,20 +68,13 @@ export function Desktop() {
         else if (action === 'minimize' && activeWindowId) minimizeWindow(activeWindowId);
         else if (action === 'projects') openWindow('projects');
         else if (action === 'about') openWindow('about');
+        else if (action === 'about_mac') openWindow('about_mac', 'About This Mac');
     };
 
     return (
         <div className="relative h-screen w-screen overflow-hidden pt-0 text-sm md:pt-4 bg-[#0a0a0f]">
-            {/* System Wallpaper - Always On Layer (z=1) */}
-            <div
-                className="pointer-events-none absolute inset-0 z-[1]"
-                style={{
-                    backgroundImage: 'url("/icons/26-Tahoe-Light-6K.png")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
-                }}
-            />
+            {/* System Wallpaper - Animated Layer (z=1) */}
+            <div className="pointer-events-none absolute inset-0 z-[1] animated-bg" />
 
             {/* Subtle Grain Overlay (z=2) */}
             <div
@@ -109,6 +109,7 @@ export function Desktop() {
                                         onToggleMusic={() => setIsMusicOpen((value) => !value)}
                                         isMusicOpen={isMusicOpen}
                                     />
+                                    <GithubWidget />
                                     <DesktopIcons />
                                     <Dock isMobile={isMobile} />
                                 </>

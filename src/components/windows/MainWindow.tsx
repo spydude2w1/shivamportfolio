@@ -39,7 +39,6 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
         setEchoCommand(val);
 
         const navMap: Record<string, SectionKey> = {
-            '1': 'projects', 'project': 'projects', 'projects': 'projects', 'pro': 'projects',
             '2': 'about', 'about': 'about', 'ab': 'about',
             '3': 'skills', 'skill': 'skills', 'sk': 'skills', 'skills': 'skills',
             '4': 'thoughts', 'thought': 'thoughts', 'th': 'thoughts', 'thoughts': 'thoughts',
@@ -83,15 +82,14 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
                 if (line === "menu") {
                     return (
                         <div key={idx} className="ml-4 flex animate-fade-in flex-col gap-1">
-                            <MenuItem num={1} keyword="projects" desc="what i've built" onClick={onNavigate} />
-                            <MenuItem num={2} keyword="about" desc="who i am" onClick={onNavigate} />
-                            <MenuItem num={3} keyword="skills" desc="what i use" onClick={onNavigate} />
-                            <MenuItem num={4} keyword="thoughts" desc="how i think" onClick={onNavigate} />
-                            <MenuItem num={5} keyword="timeline" desc="where i've been" onClick={onNavigate} />
-                            <MenuItem num={6} keyword="contact" desc="get in touch" onClick={onNavigate} />
-                            <MenuItem num={7} keyword="shiplog" desc="git log --shipped" onClick={onNavigate} />
-                            <MenuItem num={8} keyword="graveyard" desc="ideas that didn't make it" onClick={onNavigate} />
-                            <MenuItem num={9} keyword="manual" desc="cmd mode" onClick={onNavigate} />
+                            <MenuItem num={1} keyword="about" desc="who i am" onClick={onNavigate} />
+                            <MenuItem num={2} keyword="skills" desc="what i use" onClick={onNavigate} />
+                            <MenuItem num={3} keyword="thoughts" desc="how i think" onClick={onNavigate} />
+                            <MenuItem num={4} keyword="timeline" desc="where i've been" onClick={onNavigate} />
+                            <MenuItem num={5} keyword="contact" desc="get in touch" onClick={onNavigate} />
+                            <MenuItem num={6} keyword="shiplog" desc="stuff I've shipped" onClick={onNavigate} />
+                            <MenuItem num={7} keyword="graveyard" desc="ideas that didn't make it" onClick={onNavigate} />
+                            <MenuItem num={8} keyword="manual" desc="cmd mode" onClick={onNavigate} />
                         </div>
                     );
                 }

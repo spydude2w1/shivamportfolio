@@ -11,6 +11,9 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Shivam Biswal — Portfolio',
   description: 'Techpreneur. AI builder. Bengaluru.',
+  icons: {
+    icon: '/favicon.gif',
+  },
 };
 
 export default function RootLayout({

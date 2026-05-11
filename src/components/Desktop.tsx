@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import { useWindowManager } from '../hooks/useWindowManager';
 import { Window } from './Window';
 import { MainWindow } from './windows/MainWindow';
-import { ProjectsWindow } from './windows/ProjectsWindow';
 import { AboutWindow } from './windows/AboutWindow';
 import { SkillsWindow } from './windows/SkillsWindow';
 import { ThoughtsWindow } from './windows/ThoughtsWindow';
@@ -47,7 +46,6 @@ export function Desktop() {
     const renderContent = (section: SectionKey) => {
         switch (section) {
             case 'main': return <MainWindow onNavigate={openWindow} />;
-            case 'projects': return <ProjectsWindow />;
             case 'about': return <AboutWindow />;
             case 'skills': return <SkillsWindow />;
             case 'thoughts': return <ThoughtsWindow />;
@@ -66,7 +64,6 @@ export function Desktop() {
         else if (action === 'new_window') openWindow('manual', 'New Terminal');
         else if (action === 'close_window' && activeWindowId) closeWindow(activeWindowId);
         else if (action === 'minimize' && activeWindowId) minimizeWindow(activeWindowId);
-        else if (action === 'projects') openWindow('projects');
         else if (action === 'about') openWindow('about');
         else if (action === 'about_mac') openWindow('about_mac', 'About This Mac');
     };

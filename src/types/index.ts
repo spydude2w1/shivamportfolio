@@ -1,6 +1,5 @@
 export type SectionKey =
     | 'main'
-    | 'projects'
     | 'about'
     | 'skills'
     | 'thoughts'
@@ -34,16 +33,3 @@ export type Thought = {
     tag: string
 }
 
-export type Project = {
-    id: string
-    name: string
-    candid: string
-    problem: string
-    team: string[] | null
-    teamName?: string
-    whatIDid: string
-    stack: string[]
-    outcome: string
-    honest: string
-    link: string | null
-}

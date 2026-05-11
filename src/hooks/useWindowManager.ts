@@ -3,7 +3,6 @@ import { WindowState, SectionKey } from '../types';
 
 const DEFAULT_SIZES: Record<SectionKey, { width: number, height: number }> = {
     main: { width: 680, height: 480 },
-    projects: { width: 700, height: 520 },
     about: { width: 700, height: 520 },
     skills: { width: 700, height: 520 },
     thoughts: { width: 700, height: 520 },

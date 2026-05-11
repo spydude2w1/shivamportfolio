@@ -10,69 +10,6 @@ export const PERSON = {
     graduating: 2027,
 }
 
-export const PROJECTS = [
-    {
-        id: "green_credit",
-        name: "green_credit",
-        candid: "built an AI sustainability operating system with two teammates. we won at iit bombay.",
-        problem: "greenwashing at scale. no scalable way to verify eco claims or make sustainable behavior rewarding, along with a state-of-the-art  ESG AI Agent to automate complete ESG reporting.",
-        team: ["shivam biswal", "yuvaan kasliwal", "hamza supediwala"],
-        teamName: "net zero ninjas",
-        whatIDid: "full technical architecture. carbon footprint estimation, recommendation workflows, impact tracking, gamification, automated data ingestion + verification.",
-        stack: ["python", "fastapi", "postgresql", "llm integrations", "automation pipelines"],
-        outcome: "all india rank 1 — eureka! junior 2025, e-cell, iit bombay · jan 2026",
-        honest: "the hard part wasn't the AI. it was making the data trustworthy first. garbage in = prettier garbage out.",
-        link: null,
-    },
-    {
-        id: "urbexa_projects",
-        name: "urbexa_projects",
-        candid: "designed + built a website for a construction company. make it premium without looking like construction.",
-        problem: "construction clients need to understand a complex approval-to-completion process before they commit. most sites are brochureware.",
-        team: null,
-        whatIDid: "information architecture, SEO-oriented service pages, approval explainer sections, structured FAQ, visual direction.",
-        stack: ["next.js", "typescript", "javascript"],
-        outcome: "live jan 2026 — serving as client platform + organic SEO engine",
-        honest: "hardest part was restraint. clients want to list everything. the job is to cut until only the right things remain.",
-        link: null,
-    },
-    {
-        id: "firsttrack_ai",
-        name: "firsttrack_ai",
-        candid: "my startup. building it while still in school.",
-        problem: "most businesses need observability AI but don't know where to start. most consultants sell complexity they don't need.",
-        team: null,
-        whatIDid: "build and consult on observability AI solutions. hands-on. no decks without deliverables.",
-        stack: ["python", "llm tooling", "automation frameworks"],
-        outcome: "ongoing — founder & ceo",
-        honest: "founding while resource-constrained sharpens decisions fast. you learn what actually matters.",
-        link: null,
-    },
-    {
-        id: "holographic_games",
-        name: "holographic_games",
-        candid: "design lead + game developer for a studio. remotely. at 15.",
-        problem: "studios need consistent visual quality across rotating freelancers. quality control is the real job.",
-        team: null,
-        whatIDid: "led design QC, UI/UX systems, thumbnails, icons. also built game UI framework, matchmaking systems, datastore services in server-side scripts.",
-        stack: ["blender", "photoshop", "after effects", "lua"],
-        outcome: "5 thumbnails · 7 game icons · 43 UI frames · 3 ads | may 2022 – dec 2023",
-        honest: "this is where i learned taste is a system, not a feeling. you can't QC work without articulating exactly what's wrong.",
-        link: null,
-    },
-    {
-        id: "hiddendevs",
-        name: "hiddendevs",
-        candid: "4 years. 60+ clients. where i learned to actually work.",
-        problem: "game developers need fast, high-quality assets — icons, thumbnails, banners, 3D renders — with zero back-and-forth.",
-        team: null,
-        whatIDid: "delivered creative work for 60+ clients including 10+ game studios. graphic design, 3D rendering, UI/UX.",
-        stack: ["photoshop", "lightroom", "after effects", "blender"],
-        outcome: "60+ clients · 10+ game studios | jun 2020 – aug 2024",
-        honest: "60+ clients means 60+ different definitions of done. scope creep, client psychology, fast delivery under pressure.",
-        link: null,
-    },
-]
 
 export const THOUGHTS = [
     {
@@ -92,7 +29,7 @@ export const THOUGHTS = [
         tag: "product",
     },
     {
-        text: "i haven't solved how to make agentic workflows reliably recover from failure states. still working on it. the logs are not pretty.",
+        text: "i haven't solved how to make agentic workflows reliably execute in independent parallel states without failure. still working on it. the logs are not pretty.",
         tag: "honest",
     },
 ]
@@ -109,9 +46,11 @@ export const TIMELINE = [
 export const SKILLS = {
     technical: [
         "python", "typescript", "javascript", "next.js", "react.js",
-        "fastapi", "django", "html", "c++", "postgresql", "mongodb",
+        "fastapi", "html", "postgresql", "mongodb atlas", "redis",
         "distributed systems", "devops workflows", "cloud infrastructure",
         "llm integrations", "agentic workflows", "automation pipelines",
+        "flutter", "vercel", "claude code", "amazon bedrock",
+        "n8n", "docker", "antigravity", "ollama",
     ],
     creative: [
         "blender", "adobe photoshop", "after effects", "lightroom",
@@ -137,10 +76,45 @@ export const SHIP_LOG: ShipLogEntry[] = [
         status: "live",
     },
     {
+        hash: "3f9c2b1",
+        date: "2025-12-01",
+        message: "feat: green credit — AI sustainability OS",
+        description: "carbon footprint estimation, ESG AI agent, gamified impact tracking. won eureka! at iit bombay.",
+        status: "live",
+    },
+    {
         hash: "e91b4f2",
         date: "2026-03-15",
-        message: "ship: trinetra — surveillance intelligence platform",
-        description: "real-time threat detection system with computer vision and alert pipelines.",
+        message: "ship: trinetra — OSINT multi agent orchestrator",
+        description: "shipped trinetra an OSINT multi agent orchestrator platform using advanced reasoning and puzzle piecing to find an individual",
+        status: "live",
+    },
+    {
+        hash: "b2a3c4d",
+        date: "2024-08-01",
+        message: "init: firsttrack.ai — observability dashboard agent",
+        description: "firsttrack.ai is an observability dashboard agent which observes anomalies and executes to self-heal any problem",
+        status: "beta",
+    },
+    {
+        hash: "c2b5x9e",
+        date: "2026-05-08",
+        message: "ship: splitta — expense tracking app",
+        description: "shipped a small expense tracking app with automated reminders and upi payment redirects called splitta using mongodb atlas",
+        status: "live",
+    },
+    {
+        hash: "m9z1p4q",
+        date: "2026-04-22",
+        message: "ship: RS fitness website",
+        description: "shipped RS fitness website for a local gym",
+        status: "live",
+    },
+    {
+        hash: "k7l2w8n",
+        date: "2026-04-10",
+        message: "feat: HPC automation tool",
+        description: "shipped HPC automation tool which is just some basic tool to help teachers make HPC files of 200+ students at one time at much faster pace, saving hours",
         status: "live",
     },
     {
@@ -151,25 +125,11 @@ export const SHIP_LOG: ShipLogEntry[] = [
         status: "live",
     },
     {
-        hash: "3f9c2b1",
-        date: "2025-12-01",
-        message: "feat: green credit — AI sustainability OS",
-        description: "carbon footprint estimation, ESG AI agent, gamified impact tracking. won eureka! at iit bombay.",
-        status: "live",
-    },
-    {
         hash: "d4e5f6a",
         date: "2025-06-15",
         message: "ship: novak editing cohort platform",
         description: "bootstrapped an editing community & learning platform. managed content pipelines.",
         status: "sunset",
-    },
-    {
-        hash: "b2a3c4d",
-        date: "2024-08-01",
-        message: "init: firsttrack.ai — observability agent platform",
-        description: "self-healing observability platform. observe. execute. repeat.",
-        status: "beta",
     },
     {
         hash: "f1e2d3c",
@@ -188,8 +148,8 @@ export const SHIP_LOG: ShipLogEntry[] = [
     {
         hash: "0a1b2c3",
         date: "2021-01-15",
-        message: "feat: discord bots for youtube creators",
-        description: "built custom bots (node.js/mongodb) for creators with 200k+ subscribers.",
+        message: "feat: discord bots for cafe games and hotel games",
+        description: "built custom discord bots for cafe games and hotel games",
         status: "sunset",
     },
 ]
@@ -205,44 +165,28 @@ export type GraveyardEntry = {
 
 export const GRAVEYARD: GraveyardEntry[] = [
     {
-        name: "SocialSync",
+        name: "edusentry",
+        born: "2025",
+        died: "2025",
+        epitaph: "an agentic automated question paper generator using custom pipelines and RAG",
+        causeOfDeath: "Lack of support",
+        postMortem: "a multi-agent system to generate a perfect question paper for school teachers in less than 10 minutes, which is directly printable (success rate 95.6% tested). reason of discontinue: not enough value addition and support from the community, everyone told me it would fail as a SaaS, because frontier LLMs provide almost same outputs, which is false.",
+    },
+    {
+        name: "pacea",
+        born: "2025",
+        died: "2025",
+        epitaph: "an agentic fitness coach which analyses bca reports and tailors workouts",
+        causeOfDeath: "Oversaturated market",
+        postMortem: "an agentic fitness coach which analyses bca reports and tailors workouts based on an individuals output. reason of discontinue: too generic and oversaturated",
+    },
+    {
+        name: "rekal",
         born: "2024",
         died: "2024",
-        epitaph: "A social media scheduler that nobody asked for.",
-        causeOfDeath: "Market saturation",
-        postMortem: "Built a full MVP before doing any customer discovery. Found out there were 47 identical products. Lesson: talk to users before writing a single line of code.",
-    },
-    {
-        name: "StudyBuddy AI",
-        born: "2023",
-        died: "2024",
-        epitaph: "An AI tutoring platform. Smart, but too early.",
-        causeOfDeath: "Scope creep → burnout",
-        postMortem: "Started as a simple flashcard app, evolved into 'what if it also does video calls, whiteboards, and AR?' — tried to build everything at once. Died under its own ambition.",
-    },
-    {
-        name: "QuickInvoice",
-        born: "2023",
-        died: "2023",
-        epitaph: "Generate invoices in 30 seconds. Died in 30 days.",
-        causeOfDeath: "Lost interest",
-        postMortem: "Technically worked. But I didn't care about invoicing enough to maintain it. Passion matters. If you're bored building it, users will be bored using it.",
-    },
-    {
-        name: "CodeArena",
-        born: "2022",
-        died: "2022",
-        epitaph: "Competitive coding meets battle royale.",
-        causeOfDeath: "Technical complexity",
-        postMortem: "Real-time multiplayer + code execution sandboxing + leaderboards. For a solo 13-year-old developer. I learned what 'infrastructure overhead' means the hard way.",
-    },
-    {
-        name: "PixelForge",
-        born: "2022",
-        died: "2022",
-        epitaph: "An online pixel art editor with collaboration.",
-        causeOfDeath: "Shipped a better idea instead",
-        postMortem: "Was actually going well, but pivoted my energy to freelancing which was generating actual revenue. Sometimes killing a project is the right business decision.",
+        epitaph: "a free and open source custom aio downloader/converter tool supporting all sites and all formats",
+        causeOfDeath: "Inefficient architecture",
+        postMortem: "a free and open source custom aio downloader/converter tool supporting all sites and all formats. reason of discontinue: inefficient and too bulky to distribute",
     },
 ]
 

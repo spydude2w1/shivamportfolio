@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { PERSON, PROJECTS, SKILLS, THOUGHTS, TIMELINE } from './data';
+import { PERSON, SHIP_LOG, SKILLS, THOUGHTS, TIMELINE } from './data';
 
 export type CommandResult = {
     type: 'html' | 'text' | 'clear' | 'download' | 'open_url' | 'action' | 'navigation' | 'error' | 'hire';
@@ -186,7 +186,7 @@ rm: removing '/users/shivam/regrets/'.... ████░░░░░░ PERMISS
 │  ${SKILLS.creative.slice(0, 5).join(' | ')}│
 ├──────────────────────────────────────────┤
 │  SHIPPED                                 │
-│  ${PROJECTS.map(p => p.name).join(' · ')}│
+│  ${SHIP_LOG.filter(s => s.status === 'live').slice(0, 3).map(s => s.message.split('—')[0].replace('ship: ', '').replace('feat: ', '').trim()).join(' · ')}│
 └──────────────────────────────────────────┘
 Type "download resume" to save the PDF.`
         };
@@ -203,7 +203,6 @@ Type "download resume" to save the PDF.`
                 type: 'html',
                 content: `NAVIGATION
   ls                    → list current location
-  ls projects/          → list all projects
   ls thoughts/          → list thought entries
   ls skills/            → list skill categories
   ls ~/Desktop          → list desktop items
@@ -288,11 +287,7 @@ FUN
             return { type: 'error', content: `cd: no such file or directory: ${arg}` };
 
         case 'ls':
-            if (!arg) return { type: 'text', content: 'projects/  about.txt  skills/  thoughts/  timeline.txt  contact.txt  resume.pdf  shiplog/  graveyard/' };
-            if (arg === 'projects/' || arg === 'projects') {
-                const listing = PROJECTS.map(p => `  ${p.name.padEnd(22)} ${p.stack[0].padEnd(14)} ${p.outcome.split('—')[0].trim()}`).join('\n');
-                return { type: 'text', content: `total ${PROJECTS.length}\n${listing}` };
-            }
+            if (!arg) return { type: 'text', content: 'about.txt  skills/  thoughts/  timeline.txt  contact.txt  resume.pdf  shiplog/  graveyard/' };
             if (arg === 'thoughts/' || arg === 'thoughts') {
                 const listing = THOUGHTS.map((t, i) => `  entry_${i + 1}    [${t.tag}]    ${t.text.slice(0, 50)}...`).join('\n');
                 return { type: 'text', content: `total ${THOUGHTS.length}\n${listing}` };
@@ -325,9 +320,6 @@ FUN
             return { type: 'error', content: `cat: ${arg || '(no file specified)'}: No such file or directory` };
 
         case 'open':
-            if (arg === 'projects' || PROJECTS.some(p => p.id === arg || p.name === arg)) {
-                return { type: 'navigation', target: 'projects' };
-            }
             if (arg === 'shiplog') return { type: 'navigation', target: 'shiplog' };
             if (arg === 'graveyard') return { type: 'navigation', target: 'graveyard' };
             return { type: 'error', content: `open: no such item: ${arg}` };
@@ -351,8 +343,6 @@ FUN
             return {
                 type: 'text',
                 content: `.
-├── projects/
-│   ${PROJECTS.map(p => `├── ${p.name}/`).join('\n│   ')}
 ├── skills/
 │   ├── technical/
 │   └── creative/
@@ -365,7 +355,7 @@ FUN
 ├── shiplog/
 └── graveyard/
 
-${PROJECTS.length + THOUGHTS.length + 8} items`
+${THOUGHTS.length + 8} items`
             };
 
         case 'which':

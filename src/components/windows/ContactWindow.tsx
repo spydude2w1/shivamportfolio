@@ -18,11 +18,11 @@ export function ContactWindow() {
 
         const handleClick = () => {
             if (link) {
+                let textToCopy = link;
                 if (link.startsWith('mailto:')) {
-                    window.location.href = link;
-                } else {
-                    window.open(link, '_blank');
+                    textToCopy = link.replace('mailto:', '');
                 }
+                handleCopy(textToCopy, label);
             } else if (action) {
                 action();
             }

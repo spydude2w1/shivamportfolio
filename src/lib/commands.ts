@@ -9,6 +9,32 @@ export type CommandResult = {
     filename?: string;
 };
 
+const VALID_COMMANDS = ['ls', 'cd', 'pwd', 'clear', 'whoami', 'cat', 'open', 'download', 'neofetch', 'uptime', 'date', 'fortune', 'history', 'echo', 'version', 'sudo', 'rm', 'git', 'help', 'tree', 'which', 'where', 'man', 'touch', 'mkdir', 'chmod', 'curl', 'ping', 'hostname', 'uname'];
+
+function getLevenshteinDistance(a: string, b: string): number {
+    const matrix: number[][] = [];
+    for (let i = 0; i <= b.length; i++) {
+        matrix[i] = [i];
+    }
+    for (let j = 0; j <= a.length; j++) {
+        if (!matrix[0]) matrix[0] = [];
+        matrix[0][j] = j;
+    }
+    for (let i = 1; i <= b.length; i++) {
+        for (let j = 1; j <= a.length; j++) {
+            if (b.charAt(i - 1) == a.charAt(j - 1)) {
+                matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1,
+                    Math.min(matrix[i][j - 1] + 1, matrix[i - 1][j] + 1)
+                );
+            }
+        }
+    }
+    return matrix[b.length][a.length];
+}
+
 // Session start time for uptime tracking
 const SESSION_START = Date.now();
 
@@ -395,7 +421,21 @@ ${THOUGHTS.length + 8} items`
             return { type: 'text', content: 'ShivamOS 16.0.0 biswal-os arm64 Bengaluru/IN' };
 
         default:
-            return { type: 'error', content: `command not found: ${base}. type 'help' for available commands.` };
+            const suggestions = VALID_COMMANDS
+                .map(cmd => ({ cmd, distance: getLevenshteinDistance(base, cmd) }))
+                .filter(item => item.distance > 0 && item.distance <= 3) // allow up to 3 typo distance
+                .sort((a, b) => a.distance - b.distance)
+                .slice(0, 3)
+                .map(item => item.cmd);
+
+            let suggestionStr = '';
+            if (suggestions.length > 0) {
+                const joined = suggestions.length === 1 ? suggestions[0] : 
+                    suggestions.slice(0, -1).join(', ') + ' or ' + suggestions[suggestions.length - 1];
+                suggestionStr = `\ndid you mean: ${joined}?`;
+            }
+
+            return { type: 'error', content: `command not found: ${base}${suggestionStr}\ntype 'help' for available commands.` };
     }
 }
 

@@ -1,11 +1,11 @@
-import { IoHappyOutline, IoTerminal, IoCompass, IoCodeSlash, IoDocumentText, IoImage, IoSettings, IoTrashOutline, IoLogoLinkedin, IoMail } from 'react-icons/io5';
+import { IoTerminal, IoDocumentText, IoMail, IoTimeOutline, IoCodeWorking, IoLogoLinkedin, IoCodeSlash, IoTrashOutline } from 'react-icons/io5';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../lib/utils';
 import { PERSON } from '../lib/data';
 import { TRASH_RESPONSES } from '../lib/commands';
 import { useState, useRef } from 'react';
 
-export function Dock({ isMobile }: { isMobile: boolean }) {
+export function Dock({ isMobile, onOpenApp }: { isMobile: boolean, onOpenApp?: (app: string) => void }) {
     const [trashToast, setTrashToast] = useState<string | null>(null);
     const toastTimeoutRef = useRef<number | null>(null);
 
@@ -16,21 +16,23 @@ export function Dock({ isMobile }: { isMobile: boolean }) {
         toastTimeoutRef.current = window.setTimeout(() => setTrashToast(null), 3000);
     };
 
-    const docks = [
+    const docks = isMobile ? [
+        { id: 'shiplog', name: 'Work', icon: <IoDocumentText size={24} className="text-white drop-shadow-sm" />, active: false, bg: 'bg-[#007AFF]', onClick: () => onOpenApp?.('shiplog') },
+        { id: 'contact', name: 'Contact', icon: <IoMail size={24} className="text-white drop-shadow-sm" />, active: false, bg: 'bg-[#34C759]', onClick: () => onOpenApp?.('contact') },
+        { id: 'timeline', name: 'Timeline', icon: <IoTimeOutline size={26} className="text-white drop-shadow-sm" />, active: false, bg: 'bg-[#FF9500]', onClick: () => onOpenApp?.('timeline') },
+        { id: 'skills', name: 'Skills', icon: <IoCodeWorking size={26} className="text-white drop-shadow-sm" />, active: false, bg: 'bg-[#AF52DE]', onClick: () => onOpenApp?.('skills') },
+    ] : [
         { id: 'finder', name: 'Finder', icon: <img src="/icons/Finder_Icon_macOS_Big_Sur.png" className="w-full h-full object-contain p-[2px]" alt="Finder" />, active: false, bg: '' },
         { id: 'terminal', name: 'Terminal', icon: <img src="/icons/terminal-2021-06-03.webp" className="w-full h-full object-contain p-[6px]" alt="Terminal" />, active: true, bg: 'bg-[#1c1c1e]' },
         { id: 'safari', name: 'Safari', icon: <img src="/icons/safari-2025-11-14.webp" className="w-full h-full object-contain" alt="Safari" />, active: false, bg: '' },
         { id: 'vscode', name: 'VS Code', icon: <IoCodeSlash size={24} className="text-white drop-shadow-sm" />, active: true, bg: 'bg-[#007AFF]' },
         { id: 'linkedin', name: 'LinkedIn', icon: <IoLogoLinkedin size={28} className="text-white drop-shadow-sm" />, active: false, bg: 'bg-[#0077b5]', onClick: () => window.open(PERSON.linkedin, '_blank') },
         { id: 'mail', name: 'Mail', icon: <IoMail size={26} className="text-white drop-shadow-sm" />, active: false, bg: 'bg-[#FF9500]', onClick: () => window.location.href = `mailto:${PERSON.email}` },
-        // Only show these on desktop
-        ...(!isMobile ? [
-            { id: 'divider', isDivider: true },
-            { id: 'notes', name: 'Notes', icon: <img src="/icons/notes-2025-11-13.webp" className="w-full h-full object-contain" alt="Notes" />, active: false, bg: '' },
-            { id: 'photos', name: 'Photos', icon: <img src="/icons/493155.webp" className="w-full h-full object-contain" alt="Photos" />, active: false, bg: '' },
-            { id: 'settings', name: 'System Settings', icon: <img src="/icons/system-settings-2025-11-14.webp" className="w-full h-full object-contain p-[4px]" alt="Settings" />, active: false, bg: '' },
-            { id: 'trash', name: 'Trash', icon: <IoTrashOutline size={26} className="text-white/80" />, active: false, bg: 'bg-gradient-to-b from-[#4C4C50]/50 to-[#2C2C2E]/50 border border-white/10', onClick: handleTrashClick },
-        ] : [])
+        { id: 'divider', isDivider: true },
+        { id: 'notes', name: 'Notes', icon: <img src="/icons/notes-2025-11-13.webp" className="w-full h-full object-contain" alt="Notes" />, active: false, bg: '' },
+        { id: 'photos', name: 'Photos', icon: <img src="/icons/493155.webp" className="w-full h-full object-contain" alt="Photos" />, active: false, bg: '' },
+        { id: 'settings', name: 'System Settings', icon: <img src="/icons/system-settings-2025-11-14.webp" className="w-full h-full object-contain p-[4px]" alt="Settings" />, active: false, bg: '' },
+        { id: 'trash', name: 'Trash', icon: <IoTrashOutline size={26} className="text-white/80" />, active: false, bg: 'bg-gradient-to-b from-[#4C4C50]/50 to-[#2C2C2E]/50 border border-white/10', onClick: handleTrashClick },
     ];
 
     return (

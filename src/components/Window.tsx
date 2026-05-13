@@ -35,17 +35,18 @@ export function Window({
 
     if (isMobile) {
         return (
-            <div
-                className="flex flex-col rounded-[10px] overflow-hidden bg-bg shadow-2xl border border-border w-full h-full max-h-[90vh]"
-                style={{
-                    boxShadow: '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06), inset 0 1px 0 rgba(255,255,255,0.08)'
-                }}
+            <motion.div
+                initial={{ opacity: 0, y: window.innerHeight || 800 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: window.innerHeight || 800 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="absolute inset-0 pb-safe flex flex-col overflow-hidden bg-bg z-50"
             >
-                <TitleBar title={title} onClose={onClose} />
+                <TitleBar title={title} onClose={onClose} isMobile={true} />
                 <div className="flex-1 overflow-auto bg-bg p-4 flex flex-col relative no-scrollbar">
                     {children}
                 </div>
-            </div>
+            </motion.div>
         );
     }
 

@@ -84,6 +84,21 @@ export function useWindowManager() {
         setWindows(prev => prev.filter(w => w.id !== id));
     }, []);
 
+    // Automatically fall back to the highest visible window if the active one is closed
+    useEffect(() => {
+        if (windows.length > 0) {
+            const activeExists = windows.some(w => w.id === activeWindowId && w.isVisible);
+            if (!activeExists) {
+                const visibleWindows = windows.filter(w => w.isVisible);
+                if (visibleWindows.length > 0) {
+                    setActiveWindowId(visibleWindows[visibleWindows.length - 1].id);
+                } else {
+                    setActiveWindowId(null);
+                }
+            }
+        }
+    }, [windows, activeWindowId]);
+
     const minimizeWindow = useCallback((id: string) => {
         setWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: true, isVisible: false } : w));
     }, []);

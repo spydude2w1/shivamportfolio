@@ -39,25 +39,30 @@ export function MainWindow({ onNavigate }: { onNavigate: (s: SectionKey) => void
         setEchoCommand(val);
 
         const navMap: Record<string, SectionKey> = {
-            '2': 'about', 'about': 'about', 'ab': 'about',
-            '3': 'skills', 'skill': 'skills', 'sk': 'skills', 'skills': 'skills',
-            '4': 'thoughts', 'thought': 'thoughts', 'th': 'thoughts', 'thoughts': 'thoughts',
-            '5': 'timeline', 'time': 'timeline', 'ti': 'timeline', 'timeline': 'timeline',
-            '6': 'contact', 'contacts': 'contact', 'co': 'contact', 'contact': 'contact',
-            '7': 'shiplog', 'ship': 'shiplog', 'shiplog': 'shiplog', 'log': 'shiplog',
-            '8': 'graveyard', 'grave': 'graveyard', 'graveyard': 'graveyard', 'rip': 'graveyard',
-            '9': 'manual', 'cmd': 'manual', 'man': 'manual', 'ma': 'manual', 'manual': 'manual',
+            '1': 'about', 'about': 'about', 'ab': 'about',
+            '2': 'skills', 'skill': 'skills', 'sk': 'skills', 'skills': 'skills',
+            '3': 'thoughts', 'thought': 'thoughts', 'th': 'thoughts', 'thoughts': 'thoughts',
+            '4': 'timeline', 'time': 'timeline', 'ti': 'timeline', 'timeline': 'timeline',
+            '5': 'contact', 'contacts': 'contact', 'co': 'contact', 'contact': 'contact',
+            '6': 'shiplog', 'ship': 'shiplog', 'shiplog': 'shiplog', 'log': 'shiplog',
+            '7': 'graveyard', 'grave': 'graveyard', 'graveyard': 'graveyard', 'rip': 'graveyard',
+            '8': 'manual', 'cmd': 'manual', 'man': 'manual', 'ma': 'manual', 'manual': 'manual',
         };
 
         const matchingKey = Object.keys(navMap).find((key) => key.startsWith(v));
         const target = navMap[v] || (matchingKey ? navMap[matchingKey] : null);
 
-        setTimeout(() => {
-            if (target) {
+        if (target) {
+            setTimeout(() => {
                 onNavigate(target as SectionKey);
-            }
-            setEchoCommand(null);
-        }, 200);
+                setEchoCommand(null);
+            }, 200);
+        } else {
+            setEchoCommand(val + " — invalid selection");
+            setTimeout(() => {
+                setEchoCommand(null);
+            }, 800);
+        }
     };
 
     return (

@@ -86,7 +86,7 @@ export const SHIP_LOG: ShipLogEntry[] = [
         hash: "e91b4f2",
         date: "2026-03-15",
         message: "ship: trinetra — OSINT multi agent orchestrator",
-        description: "shipped trinetra an OSINT multi agent orchestrator platform using advanced reasoning and puzzle piecing to find an individual",
+        description: "leveraging advanced reasoning, entity correlation, and contextual puzzle-piecing to identify and profile individuals from fragmented intelligence signals.",
         status: "live",
     },
     {

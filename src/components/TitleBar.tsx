@@ -7,9 +7,10 @@ type TitleBarProps = {
     onClose: () => void;
     dragControls?: DragControls;
     isActive?: boolean;
+    isMobile?: boolean;
 };
 
-export function TitleBar({ title, onClose, dragControls, isActive = true }: TitleBarProps) {
+export function TitleBar({ title, onClose, dragControls, isActive = true, isMobile = false }: TitleBarProps) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -28,34 +29,46 @@ export function TitleBar({ title, onClose, dragControls, isActive = true }: Titl
             onMouseLeave={() => setIsHovered(false)}
         >
             <div className="flex gap-[7px] items-center">
-                <button
-                    onClick={(e) => { e.stopPropagation(); onClose(); }}
-                    className="w-[12px] h-[12px] rounded-full flex items-center justify-center cursor-default group"
-                    style={{
-                        background: isActive ? '#ff5f57' : 'rgba(255,255,255,0.2)',
-                        border: isActive ? '1px solid #e0443e' : 'none'
-                    }}
-                >
-                    {isHovered && isActive && <span className="text-black text-[9px] opacity-70 leading-none">✕</span>}
-                </button>
-                <button
-                    className="w-[12px] h-[12px] rounded-full flex items-center justify-center cursor-default group"
-                    style={{
-                        background: isActive ? '#ffbd2e' : 'rgba(255,255,255,0.2)',
-                        border: isActive ? '1px solid #dea123' : 'none'
-                    }}
-                >
-                    {isHovered && isActive && <span className="text-black text-[9px] opacity-70 leading-none">−</span>}
-                </button>
-                <button
-                    className="w-[12px] h-[12px] rounded-full flex items-center justify-center cursor-default group"
-                    style={{
-                        background: isActive ? '#28c840' : 'rgba(255,255,255,0.2)',
-                        border: isActive ? '1px solid #1aab29' : 'none'
-                    }}
-                >
-                    {isHovered && isActive && <span className="text-black text-[9px] opacity-70 leading-none">+</span>}
-                </button>
+                {isMobile ? (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onClose(); }}
+                        onPointerDown={(e) => { e.stopPropagation(); onClose(); }}
+                        className="text-[var(--amber)] text-xs font-semibold px-2 py-1 flex items-center -ml-2 z-50 relative"
+                    >
+                        ← Back
+                    </button>
+                ) : (
+                    <>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onClose(); }}
+                            className="w-[12px] h-[12px] rounded-full flex items-center justify-center cursor-default group"
+                            style={{
+                                background: isActive ? '#ff5f57' : 'rgba(255,255,255,0.2)',
+                                border: isActive ? '1px solid #e0443e' : 'none'
+                            }}
+                        >
+                            {isHovered && isActive && <span className="text-black text-[9px] opacity-70 leading-none">✕</span>}
+                        </button>
+                        <button
+                            className="w-[12px] h-[12px] rounded-full flex items-center justify-center cursor-default group"
+                            style={{
+                                background: isActive ? '#ffbd2e' : 'rgba(255,255,255,0.2)',
+                                border: isActive ? '1px solid #dea123' : 'none'
+                            }}
+                        >
+                            {isHovered && isActive && <span className="text-black text-[9px] opacity-70 leading-none">−</span>}
+                        </button>
+                        <button
+                            className="w-[12px] h-[12px] rounded-full flex items-center justify-center cursor-default group"
+                            style={{
+                                background: isActive ? '#28c840' : 'rgba(255,255,255,0.2)',
+                                border: isActive ? '1px solid #1aab29' : 'none'
+                            }}
+                        >
+                            {isHovered && isActive && <span className="text-black text-[9px] opacity-70 leading-none">+</span>}
+                        </button>
+                    </>
+                )}
             </div>
             <div
                 className={`flex-1 text-center font-normal text-[13px] ml-[-60px] tracking-tight ${isActive ? 'text-[#dedede]' : 'text-[#888888]'}`}

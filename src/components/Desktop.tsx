@@ -42,6 +42,14 @@ export function Desktop() {
         blurAll
     } = useWindowManager();
     const [isMusicOpen, setIsMusicOpen] = React.useState(false);
+    const [showMobileNotice, setShowMobileNotice] = React.useState(true);
+
+    React.useEffect(() => {
+        if (isMobile && !booting) {
+            const t = setTimeout(() => setShowMobileNotice(false), 6000);
+            return () => clearTimeout(t);
+        }
+    }, [isMobile, booting]);
 
     const renderContent = (section: SectionKey) => {
         switch (section) {
@@ -69,7 +77,7 @@ export function Desktop() {
     };
 
     return (
-        <div className="relative h-screen w-screen overflow-hidden pt-0 text-sm md:pt-4 bg-[#0a0a0f]">
+        <div className="relative h-[100dvh] w-screen overflow-hidden pt-0 text-sm md:pt-4 bg-[#0a0a0f]">
             {/* System Wallpaper - Animated Layer (z=1) */}
             <div className="pointer-events-none absolute inset-0 z-[1] animated-bg" />
 
@@ -113,25 +121,20 @@ export function Desktop() {
                             )}
 
                             {isMobile ? (
-                                <div className="h-full w-full p-2 pb-safe">
-                                    <AnimatePresence>
-                                    {windows.filter((windowState) => windowState.isVisible).map((win, idx, arr) => (
-                                        <div
+                                <div className="h-full w-full relative overflow-hidden">
+                                    <AnimatePresence mode="popLayout">
+                                    {windows.filter((w) => w.isVisible && w.id === activeWindowId).map((win) => (
+                                        <Window
                                             key={win.id}
-                                            className="h-full w-full"
-                                            style={{ display: idx === arr.length - 1 ? 'block' : 'none' }}
+                                            {...win}
+                                            isMobile={true}
+                                            isActive={true}
+                                            onClose={() => closeWindow(win.id)}
+                                            onFocus={() => { }}
+                                            onUpdatePosition={() => { }}
                                         >
-                                            <Window
-                                                {...win}
-                                                isMobile={true}
-                                                isActive={true}
-                                                onClose={() => closeWindow(win.id)}
-                                                onFocus={() => { }}
-                                                onUpdatePosition={() => { }}
-                                            >
-                                                {renderContent(win.section)}
-                                            </Window>
-                                        </div>
+                                            {renderContent(win.section)}
+                                        </Window>
                                     ))}
                                     </AnimatePresence>
                                 </div>
@@ -150,6 +153,23 @@ export function Desktop() {
                                         {renderContent(win.section)}
                                     </Window>
                                 ))}
+                                </AnimatePresence>
+                            )}
+
+                            {isMobile && (
+                                <AnimatePresence>
+                                    {showMobileNotice && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -50 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -50 }}
+                                            className="absolute top-4 left-4 right-4 z-[9999] bg-[#1a1a1a]/90 backdrop-blur-md border border-[var(--border)] rounded-2xl px-4 py-3 text-center shadow-2xl flex items-center justify-between"
+                                            onClick={() => setShowMobileNotice(false)}
+                                        >
+                                            <span className="text-[13px] text-[var(--amber)] font-medium">View on desktop for best viewing experience!</span>
+                                            <button className="text-[var(--muted)] hover:text-[var(--text-bright)] p-1">✕</button>
+                                        </motion.div>
+                                    )}
                                 </AnimatePresence>
                             )}
 
